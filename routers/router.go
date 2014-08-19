@@ -13,4 +13,6 @@ func init() {
 			&controllers.UserController{}, "post:Login")
 	beego.Router("/v1/users/logout",
 			&controllers.UserController{}, "post:Logout")
+	beego.Router("/v1/users/passwd",
+			&controllers.UserController{}, "post:Passwd")
 }

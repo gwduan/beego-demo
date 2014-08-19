@@ -19,3 +19,9 @@ type LoginInfo struct {
 type LogoutForm struct {
 	Phone        string `form:"phone"         valid:"Required;Mobile"`
 }
+
+type PasswdForm struct {
+	Phone        string `form:"phone"         valid:"Required;Mobile"`
+	OldPass      string `form:"old_password"  valid:"Required"`
+	NewPass      string `form:"new_password"  valid:"Required"`
+}

@@ -153,3 +153,53 @@ func (this *UserController) Logout() {
 	this.Data["json"] = models.NewNormalInfo("Succes")
 	this.ServeJson()
 }
+
+func (this *UserController) Passwd() {
+	form := models.PasswdForm{}
+	if err := this.ParseForm(&form); err != nil {
+		beego.Debug("ParsePasswdForm:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	beego.Debug("ParsePasswdForm:", &form)
+
+	valid := validation.Validation{}
+	ok, err := valid.Valid(&form)
+	if err != nil {
+		beego.Debug("ValidPasswdForm:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	if !ok {
+		beego.Debug("ValidPasswdForm errors:")
+		for _, err := range valid.Errors {
+			beego.Debug(err.Key, err.Message)
+		}
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+
+	if this.GetSession("user_id") != form.Phone {
+		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		this.ServeJson()
+		return
+	}
+
+	if code, err := models.ChangePass(form.Phone, form.OldPass,
+			form.NewPass); err != nil {
+		beego.Debug("ChangeUserPass:", err)
+		if (code == 100) {
+			this.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
+		} else {
+			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+		}
+		this.ServeJson()
+		return
+	}
+
+	this.Data["json"] = models.NewNormalInfo("Succes")
+	this.ServeJson()
+}

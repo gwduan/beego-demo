@@ -3,6 +3,7 @@ package models
 import (
 	"beego-demo/models/mymongo"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
@@ -67,4 +68,24 @@ func (u *User) CheckPass(pass string) bool {
 
 func (u *User) ClearPass() {
 	u.Password = ""
+}
+
+func ChangePass(id, oldPass, newPass string) (code int, err error) {
+	mConn := mymongo.Conn()
+	defer mConn.Close()
+
+	c := mConn.DB("").C("users")
+	err = c.Update(bson.M{"_id": id, "password": oldPass},
+			bson.M{"$set": bson.M{"password": newPass}})
+
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			code = 100
+		} else {
+			code = -1
+		}
+	} else {
+		code = 0
+	}
+	return
 }
