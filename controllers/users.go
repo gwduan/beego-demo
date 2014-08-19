@@ -113,3 +113,43 @@ func (this *UserController) Login() {
 	this.Data["json"] = &models.LoginInfo{Code: 0, UserInfo: &user}
 	this.ServeJson()
 }
+
+func (this *UserController) Logout() {
+	form := models.LogoutForm{}
+	if err := this.ParseForm(&form); err != nil {
+		beego.Debug("ParseLogoutForm:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	beego.Debug("ParseLogoutForm:", &form)
+
+	valid := validation.Validation{}
+	ok, err := valid.Valid(&form)
+	if err != nil {
+		beego.Debug("ValidLogoutForm:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	if !ok {
+		beego.Debug("ValidLogoutForm errors:")
+		for _, err := range valid.Errors {
+			beego.Debug(err.Key, err.Message)
+		}
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+
+	if this.GetSession("user_id") != form.Phone {
+		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		this.ServeJson()
+		return
+	}
+
+	this.DelSession("user_id")
+
+	this.Data["json"] = models.NewNormalInfo("Succes")
+	this.ServeJson()
+}

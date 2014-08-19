@@ -15,3 +15,7 @@ type LoginInfo struct {
 	Code     int    `json:"code"`
 	UserInfo *User  `json:"user"`
 }
+
+type LogoutForm struct {
+	Phone        string `form:"phone"         valid:"Required;Mobile"`
+}
