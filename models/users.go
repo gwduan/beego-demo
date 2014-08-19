@@ -41,3 +41,30 @@ func (u *User) Insert() (code int, err error) {
 	}
 	return
 }
+
+func (u *User) FindById(id string) (code int, err error) {
+	mConn := mymongo.Conn()
+	defer mConn.Close()
+
+	c := mConn.DB("").C("users")
+	err = c.FindId(id).One(u);
+
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			code = 100
+		} else {
+			code = -1
+		}
+	} else {
+		code = 0
+	}
+	return
+}
+
+func (u *User) CheckPass(pass string) bool {
+	return u.Password == pass
+}
+
+func (u *User) ClearPass() {
+	u.Password = ""
+}
