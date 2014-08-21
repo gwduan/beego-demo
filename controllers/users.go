@@ -5,6 +5,8 @@ import (
 	"github.com/astaxie/beego/validation"
 	"beego-demo/models"
 	"time"
+	"os"
+	"io"
 )
 
 type UserController struct {
@@ -198,6 +200,47 @@ func (this *UserController) Passwd() {
 		}
 		this.ServeJson()
 		return
+	}
+
+	this.Data["json"] = models.NewNormalInfo("Succes")
+	this.ServeJson()
+}
+
+func (this *UserController) Uploads() {
+	phone := this.GetString("phone")
+	beego.Debug("Input phone:", phone)
+
+	if this.GetSession("user_id") != phone {
+		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		this.ServeJson()
+		return
+	}
+
+	files := this.Ctx.Request.MultipartForm.File["photos"]
+	for i, _ := range files {
+		src, err := files[i].Open()
+		if err != nil {
+			beego.Debug("Open MultipartForm File:", err)
+			this.Data["json"] = models.NewErrorInfo(ErrOpenFile)
+			this.ServeJson()
+			return
+		}
+		defer src.Close()
+
+		dst, err := os.Create("/var/tmp/" + files[i].Filename)
+		if err != nil {
+			beego.Debug("Create File:", err)
+			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
+			this.ServeJson()
+		}
+		defer dst.Close()
+
+		if _, err := io.Copy(dst, src); err != nil {
+			beego.Debug("Copy File:", err)
+			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
+			this.ServeJson()
+			return
+		}
 	}
 
 	this.Data["json"] = models.NewNormalInfo("Succes")

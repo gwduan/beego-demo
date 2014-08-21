@@ -11,7 +11,8 @@ A web demo using Beego framework, with MongoDB and Redis support.
 | 注册 | /v1/users/register | POST |
 | 登录 | /v1/users/login    | POST |
 | 登出 | /v1/users/logout   | POST |
-| 改密 | /v1/users/passwd   | POST |
+| 修改密码 | /v1/users/passwd   | POST |
+| 上传多个文件 | /v1/users/uploads   | POST |
 
 输入数据通过form表单提交，返回数据均为json。
 
