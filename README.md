@@ -21,6 +21,7 @@ A web demo using Beego framework, with MongoDB and Redis support.
 * login.html
 * logout.html
 * passwd.html
+* uploads.html
 
 ## 环境
 
