@@ -207,10 +207,34 @@ func (this *UserController) Passwd() {
 }
 
 func (this *UserController) Uploads() {
-	phone := this.GetString("phone")
-	beego.Debug("Input phone:", phone)
+	form := models.UploadsForm{}
+	if err := this.ParseForm(&form); err != nil {
+		beego.Debug("ParseUploadsForm:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	beego.Debug("ParseUploadsForm:", &form)
 
-	if this.GetSession("user_id") != phone {
+	valid := validation.Validation{}
+	ok, err := valid.Valid(&form)
+	if err != nil {
+		beego.Debug("ValidUploadsForm:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	if !ok {
+		beego.Debug("ValidUploadsForm errors:")
+		for _, err := range valid.Errors {
+			beego.Debug(err.Key, err.Message)
+		}
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+
+	if this.GetSession("user_id") != form.Phone {
 		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
 		this.ServeJson()
 		return

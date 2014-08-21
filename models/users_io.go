@@ -25,3 +25,7 @@ type PasswdForm struct {
 	OldPass      string `form:"old_password"  valid:"Required"`
 	NewPass      string `form:"new_password"  valid:"Required"`
 }
+
+type UploadsForm struct {
+	Phone        string `form:"phone"         valid:"Required;Mobile"`
+}
