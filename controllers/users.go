@@ -7,6 +7,9 @@ import (
 	"time"
 	"os"
 	"io"
+	"fmt"
+	"crypto/md5"
+	"path/filepath"
 )
 
 type UserController struct {
@@ -251,7 +254,17 @@ func (this *UserController) Uploads() {
 		}
 		defer src.Close()
 
-		dst, err := os.Create("/var/tmp/" + files[i].Filename)
+		hash := md5.New()
+		if _, err := io.Copy(hash, src); err != nil {
+			beego.Debug("Copy File to Hash:", err)
+			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
+			this.ServeJson()
+			return
+		}
+		hex := fmt.Sprintf("%x", hash.Sum(nil))
+
+		dst, err := os.Create(beego.AppConfig.String("apppath") +
+			"static/" + hex + filepath.Ext(files[i].Filename))
 		if err != nil {
 			beego.Debug("Create File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
@@ -259,6 +272,7 @@ func (this *UserController) Uploads() {
 		}
 		defer dst.Close()
 
+		src.Seek(0, 0)
 		if _, err := io.Copy(dst, src); err != nil {
 			beego.Debug("Copy File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
