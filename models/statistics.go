@@ -1,10 +1,10 @@
 package models
 
 import (
-	"github.com/astaxie/beego"
 	"beego-demo/models/myredis"
-	"time"
 	"fmt"
+	"github.com/astaxie/beego"
+	"time"
 )
 
 func IncTotalUserCount(t time.Time) error {
@@ -30,4 +30,3 @@ func IncTotalUserCount(t time.Time) error {
 
 	return nil
 }
-

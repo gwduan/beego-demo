@@ -11,4 +11,3 @@ const (
 	ErrOpenFile    = "打开文件出错"
 	ErrWriteFile   = "写文件出错"
 )
-

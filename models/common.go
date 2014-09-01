@@ -12,4 +12,3 @@ func NewErrorInfo(info string) *CodeInfo {
 func NewNormalInfo(info string) *CodeInfo {
 	return &CodeInfo{0, info}
 }
-

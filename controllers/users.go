@@ -1,15 +1,15 @@
 package controllers
 
 import (
+	"beego-demo/models"
+	"crypto/md5"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
-	"beego-demo/models"
-	"time"
-	"os"
 	"io"
-	"fmt"
-	"crypto/md5"
+	"os"
 	"path/filepath"
+	"time"
 )
 
 type UserController struct {
@@ -50,7 +50,7 @@ func (this *UserController) Register() {
 
 	if code, err := user.Insert(); err != nil {
 		beego.Debug("InsertUser:", err)
-		if (code == 100) {
+		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
@@ -96,7 +96,7 @@ func (this *UserController) Login() {
 	user := models.User{}
 	if code, err := user.FindById(form.Phone); err != nil {
 		beego.Debug("FindUserById:", err)
-		if (code == 100) {
+		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUser)
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
@@ -193,10 +193,10 @@ func (this *UserController) Passwd() {
 		return
 	}
 
-	if code, err := models.ChangePass(form.Phone, form.OldPass,
-			form.NewPass); err != nil {
+	code, err := models.ChangePass(form.Phone, form.OldPass, form.NewPass)
+	if err != nil {
 		beego.Debug("ChangeUserPass:", err)
-		if (code == 100) {
+		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)

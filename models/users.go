@@ -8,17 +8,17 @@ import (
 )
 
 type User struct {
-	ID           string    `bson:"_id"           json:"_id"`
-	Name         string    `bson:"name"          json:"name"`
-	Password     string    `bson:"password"      json:"password"`
-	RegDate      time.Time `bson:"reg_date"      json:"reg_date"`
+	ID       string    `bson:"_id"      json:"_id"`
+	Name     string    `bson:"name"     json:"name"`
+	Password string    `bson:"password" json:"password"`
+	RegDate  time.Time `bson:"reg_date" json:"reg_date"`
 }
 
 func NewUser(r *RegisterForm, t time.Time) *User {
 	user := User{
-		ID:           r.Phone,
-		Name:         r.Name,
-		Password:     r.Password}
+		ID:       r.Phone,
+		Name:     r.Name,
+		Password: r.Password}
 	user.RegDate = t
 
 	return &user
@@ -32,7 +32,7 @@ func (u *User) Insert() (code int, err error) {
 	err = c.Insert(u)
 
 	if err != nil {
-		if  mgo.IsDup(err) {
+		if mgo.IsDup(err) {
 			code = 100
 		} else {
 			code = -1
@@ -48,7 +48,7 @@ func (u *User) FindById(id string) (code int, err error) {
 	defer mConn.Close()
 
 	c := mConn.DB("").C("users")
-	err = c.FindId(id).One(u);
+	err = c.FindId(id).One(u)
 
 	if err != nil {
 		if err == mgo.ErrNotFound {
@@ -76,7 +76,7 @@ func ChangePass(id, oldPass, newPass string) (code int, err error) {
 
 	c := mConn.DB("").C("users")
 	err = c.Update(bson.M{"_id": id, "password": oldPass},
-			bson.M{"$set": bson.M{"password": newPass}})
+		bson.M{"$set": bson.M{"password": newPass}})
 
 	if err != nil {
 		if err == mgo.ErrNotFound {
