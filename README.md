@@ -54,14 +54,14 @@ password =
 
 ### Beego
 
-安装所有依赖包：
+安装/升级所有依赖包：
 
 ```
-$ go get github.com/astaxie/beego
-$ go get github.com/beego/bee
-$ go get github.com/astaxie/beego/session/redis
-$ go get gopkg.in/mgo.v2
-$ go get github.com/garyburd/redigo/redis
+$ go get -u github.com/astaxie/beego
+$ go get -u github.com/beego/bee
+$ go get -u github.com/astaxie/beego/session/redis
+$ go get -u gopkg.in/mgo.v2
+$ go get -u github.com/garyburd/redigo/redis
 ```
 
 当前版本：
@@ -70,7 +70,7 @@ $ go get github.com/garyburd/redigo/redis
 $ bee version
 bee   :1.2.2
 beego :1.4.1
-Go    :go version go1.3.1 darwin/amd64
+Go    :go version go1.3.2 darwin/amd64
 ```
 
 ## 运行
