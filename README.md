@@ -68,9 +68,9 @@ $ go get -u github.com/garyburd/redigo/redis
 
 ```
 $ bee version
-bee   :1.2.2
-beego :1.4.1
-Go    :go version go1.3.2 darwin/amd64
+bee   :1.2.4
+beego :1.4.3
+Go    :go version go1.4.2 darwin/amd64
 ```
 
 ## 运行
