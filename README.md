@@ -1,10 +1,12 @@
 # beego-demo
 
-A web demo using Beego framework, with MongoDB and Redis support.
+A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 
-这是一个基于[Beego](http://beego.me)框架构建的应用demo，后台数据库使用[MongoDB](http://www.mongodb.org)，并使用[Redis](http://redis.io)存储session和一些统计数据。
+这是一个基于[Beego](http://beego.me)框架构建的应用demo，后台数据库使用[MongoDB](http://www.mongodb.org)和[MySQL](http://www.mysql.com)，并使用[Redis](http://redis.io)存储session和一些统计数据。
 
-## API列表
+## API列表1
+
+该部分使用的数据库是MongoDB。
 
 | 功能 | URL | Mode |
 |------|:-----|------|
@@ -23,6 +25,14 @@ A web demo using Beego framework, with MongoDB and Redis support.
 * passwd.html
 * uploads.html
 
+## API列表2
+
+该部分使用的数据库是MySQL。
+
+| 功能 | URL | Mode |
+|------|:-----|------|
+| 获取单个角色信息 | /v1/roles/:id | GET |
+
 ## 环境
 
 ### GO语言
@@ -39,6 +49,17 @@ url = mongodb://127.0.0.1:27017/beego-demo
 ```
 
 完整的url写法可参考：http://godoc.org/gopkg.in/mgo.v2#Dial
+
+### MySQL
+
+在conf/app.conf中设置MySQL参数，如：
+
+```
+[mysql]
+url = root:root@/beego-demo?charset=utf8&parseTime=True&loc=Local
+```
+
+完整的url写法可参考：https://github.com/go-sql-driver/mysql#dsn-data-source-name
 
 ### Redis
 
@@ -62,6 +83,7 @@ $ go get -u github.com/beego/bee
 $ go get -u github.com/astaxie/beego/session/redis
 $ go get -u gopkg.in/mgo.v2
 $ go get -u github.com/garyburd/redigo/redis
+$ go get -u github.com/go-sql-driver/mysql
 ```
 
 当前版本：
