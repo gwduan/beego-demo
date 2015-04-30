@@ -32,6 +32,21 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 | 功能 | URL | Mode |
 |------|:-----|------|
 | 获取单个角色信息 | /v1/roles/:id | GET |
+| 获取所有角色信息 | /v1/roles | GET |
+
+多记录api，提供如下参数：
+* query=col1:op1:val1,col2:op2:val2 ...
+* order=col1:asc|desc,col2:asc|esc ...
+* limit=n，缺省为10
+* offset=n，缺省为0
+
+query的op值：
+* eq，等于
+* ne，不等于
+* gt，大于
+* ge，大于等于
+* lt，小于
+* le，小于等于
 
 ## 环境
 
