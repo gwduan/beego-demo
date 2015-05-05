@@ -15,6 +15,28 @@ type Role struct {
 	RegDate  time.Time `json:"reg_date"`
 }
 
+func (r *Role) Insert() (code int, err error) {
+	db := mymysql.Conn()
+
+	//if result, err := db.Exec(
+	if _, err := db.Exec("INSERT INTO roles(id, name, password, reg_date) VALUES(?, ?, ?, ?)", r.Id, r.Name, r.Password, r.RegDate); err != nil {
+		if e, ok := err.(*mysql.MySQLError); ok {
+			//duplicate key
+			if e.Number == 1062 {
+				return 100, err
+			} else {
+				return -1, err
+			}
+		} else {
+			return -1, err
+		}
+	} else {
+		//r.Id, _ = result.LastInsertId()
+	}
+
+	return 0, nil
+}
+
 func (r *Role) FindById(id int64) (code int, err error) {
 	db := mymysql.Conn()
 

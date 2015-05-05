@@ -22,4 +22,6 @@ func init() {
 		&controllers.RoleController{}, "get:GetOne")
 	beego.Router("/v1/roles",
 		&controllers.RoleController{}, "get:GetAll")
+	beego.Router("/v1/roles",
+		&controllers.RoleController{}, "post:Post")
 }

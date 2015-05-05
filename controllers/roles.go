@@ -2,14 +2,45 @@ package controllers
 
 import (
 	"beego-demo/models"
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type RoleController struct {
 	beego.Controller
+}
+
+func (this *RoleController) Post() {
+	var role models.Role
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &role)
+	if err != nil {
+		beego.Debug("Input err: ", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+
+	role.RegDate = time.Now()
+	beego.Debug("Input role: ", role)
+
+	if code, err := role.Insert(); err != nil {
+		beego.Debug("Insert role:", err)
+		if code == 100 {
+			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
+		} else {
+			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+		}
+		this.ServeJson()
+		return
+	}
+	beego.Debug("Current role: ", role)
+
+	this.Data["json"] = &role
+	this.ServeJson()
 }
 
 func (this *RoleController) GetOne() {
