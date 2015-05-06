@@ -184,6 +184,40 @@ func (this *RoleController) GetAll() {
 	this.ServeJson()
 }
 
+func (this *RoleController) Put() {
+	idStr := this.Ctx.Input.Params[":id"]
+	id, err := strconv.ParseInt(idStr, 0, 64)
+	if err != nil {
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+
+	role := models.Role{}
+	err = json.Unmarshal(this.Ctx.Input.RequestBody, &role)
+	if err != nil {
+		beego.Debug("Input err: ", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+
+	code, err := role.UpdateById(id)
+	if err != nil {
+		beego.Debug("Update role:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+		this.ServeJson()
+		return
+	}
+
+	if code == 100 {
+		this.Data["json"] = models.NewErrorInfo(ErrNoUserChange)
+	} else {
+		this.Data["json"] = models.NewNormalInfo("Succes")
+	}
+	this.ServeJson()
+}
+
 func (this *RoleController) Delete() {
 	idStr := this.Ctx.Input.Params[":id"]
 	id, err := strconv.ParseInt(idStr, 0, 64)

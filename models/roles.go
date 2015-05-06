@@ -156,6 +156,22 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 	return records, nil
 }
 
+func (r *Role) UpdateById(id int64) (code int, err error) {
+	db := mymysql.Conn()
+
+	result, err := db.Exec("UPDATE roles SET name = ?, password = ? WHERE id = ?", r.Name, r.Password, id)
+	if err != nil {
+		return -1, err
+	}
+
+	num, _ := result.RowsAffected()
+	if num > 0 {
+		return 0, nil
+	} else {
+		return 100, nil
+	}
+}
+
 func (r *Role) DeleteById(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
