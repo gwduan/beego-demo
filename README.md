@@ -31,11 +31,20 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 
 | 功能 | URL | Mode |
 |------|:-----|------|
-| 获取一个角色信息 | /v1/roles/:id | GET |
-| 获取所有角色信息 | /v1/roles | GET |
-| 新增一个角色信息 | /v1/roles | POST |
-| 修改一个角色信息 | /v1/roles/:id | PUT |
+| 获取一个角色信息 | /v1/roles/:id | GET    |
+| 获取所有角色信息 | /v1/roles     | GET    |
+| 新增一个角色信息 | /v1/roles     | POST   |
+| 修改一个角色信息 | /v1/roles/:id | PUT    |
 | 删除一个角色信息 | /v1/roles/:id | DELETE |
+
+表结构如下：
+
+| Field    | Type         | Null | Key |
+|----------|:-------------|------|-----|
+| id       | bigint(20)   | NO   | PRI |
+| name     | varchar(255) | YES  |
+| password | varchar(255) | YES  |
+| reg_date | datetime     | YES  |
 
 多记录api，提供如下参数：
 * query=col1:op1:val1,col2:op2:val2 ...
