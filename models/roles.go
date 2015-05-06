@@ -155,3 +155,19 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 
 	return records, nil
 }
+
+func (r *Role) DeleteById(id int64) (code int, err error) {
+	db := mymysql.Conn()
+
+	result, err := db.Exec("DELETE FROM roles WHERE id = ?", id)
+	if err != nil {
+		return -1, err
+	}
+
+	num, _ := result.RowsAffected()
+	if num > 0 {
+		return 0, nil
+	} else {
+		return 100, nil
+	}
+}

@@ -34,6 +34,7 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 | 获取单个角色信息 | /v1/roles/:id | GET |
 | 获取所有角色信息 | /v1/roles | GET |
 | 新增一个角色信息 | /v1/roles | POST |
+| 删除单个角色信息 | /v1/roles/:id | DELETE |
 
 多记录api，提供如下参数：
 * query=col1:op1:val1,col2:op2:val2 ...
