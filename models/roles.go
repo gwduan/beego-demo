@@ -15,6 +15,16 @@ type Role struct {
 	RegDate  time.Time `json:"reg_date"`
 }
 
+func NewRole(f *RolePostForm, t time.Time) *Role {
+	role := Role{
+		Id:       f.Id,
+		Name:     f.Name,
+		Password: f.Password}
+	role.RegDate = t
+
+	return &role
+}
+
 func (r *Role) Insert() (code int, err error) {
 	db := mymysql.Conn()
 
@@ -40,10 +50,7 @@ func (r *Role) Insert() (code int, err error) {
 func (r *Role) FindById(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
-	row := db.QueryRow(
-		"SELECT id, name, password, reg_date FROM roles WHERE id = ?",
-		id)
-
+	row := db.QueryRow("SELECT id, name, password, reg_date FROM roles WHERE id = ?", id)
 	var tmpId sql.NullInt64
 	var tmpName sql.NullString
 	var tmpPassword sql.NullString
@@ -71,6 +78,10 @@ func (r *Role) FindById(id int64) (code int, err error) {
 	}
 
 	return 0, nil
+}
+
+func (r *Role) ClearPass() {
+	r.Password = ""
 }
 
 func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
@@ -156,10 +167,10 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 	return records, nil
 }
 
-func (r *Role) UpdateById(id int64) (code int, err error) {
+func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
 	db := mymysql.Conn()
 
-	result, err := db.Exec("UPDATE roles SET name = ?, password = ? WHERE id = ?", r.Name, r.Password, id)
+	result, err := db.Exec("UPDATE roles SET name = ?, password = ? WHERE id = ?", f.Name, f.Password, id)
 	if err != nil {
 		return -1, err
 	}

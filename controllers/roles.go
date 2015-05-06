@@ -15,20 +15,22 @@ type RoleController struct {
 }
 
 func (this *RoleController) Post() {
-	var role models.Role
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &role)
+	form := models.RolePostForm{}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
 	if err != nil {
-		beego.Debug("Input err: ", err)
+		beego.Debug("ParseRolePost:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
 	}
+	beego.Debug("ParseRolePost:", &form)
 
-	role.RegDate = time.Now()
-	beego.Debug("Input role: ", role)
+	regDate := time.Now()
+	role := models.NewRole(&form, regDate)
+	beego.Debug("NewRole:", role)
 
 	if code, err := role.Insert(); err != nil {
-		beego.Debug("Insert role:", err)
+		beego.Debug("InsertRole:", err)
 		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
 		} else {
@@ -37,9 +39,8 @@ func (this *RoleController) Post() {
 		this.ServeJson()
 		return
 	}
-	beego.Debug("Current role: ", role)
 
-	this.Data["json"] = &role
+	this.Data["json"] = models.NewNormalInfo("Succes")
 	this.ServeJson()
 }
 
@@ -47,6 +48,7 @@ func (this *RoleController) GetOne() {
 	idStr := this.Ctx.Input.Params[":id"]
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
+		beego.Debug("ParseRoleId:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
@@ -65,7 +67,9 @@ func (this *RoleController) GetOne() {
 	}
 	beego.Debug("RoleInfo:", &role)
 
-	this.Data["json"] = &role
+	role.ClearPass()
+
+	this.Data["json"] = &models.RoleGetOneInfo{Code: 0, RoleInfo: &role}
 	this.ServeJson()
 }
 
@@ -116,8 +120,8 @@ func (this *RoleController) GetAll() {
 			queryOp[key] = operator
 		}
 	}
-	beego.Debug("queryVal", queryVal)
-	beego.Debug("queryOp", queryOp)
+	beego.Debug("QueryVal:", queryVal)
+	beego.Debug("QueryOp:", queryOp)
 
 	var order map[string]string = make(map[string]string)
 	if v := this.GetString("order"); v != "" {
@@ -145,7 +149,7 @@ func (this *RoleController) GetAll() {
 			order[kv[0]] = kv[1]
 		}
 	}
-	beego.Debug("order ", order)
+	beego.Debug("Order:", order)
 
 	var limit int64 = 10
 	if v, err := this.GetInt64("limit"); err != nil {
@@ -157,7 +161,7 @@ func (this *RoleController) GetAll() {
 			limit = v
 		}
 	}
-	beego.Debug("limit ", limit)
+	beego.Debug("Limit:", limit)
 
 	var offset int64 = 0
 	if v, err := this.GetInt64("offset"); err != nil {
@@ -169,18 +173,23 @@ func (this *RoleController) GetAll() {
 			offset = v
 		}
 	}
-	beego.Debug("offset ", offset)
+	beego.Debug("Offset:", offset)
 
-	records, err := models.GetAllRoles(queryVal, queryOp, order,
+	roles, err := models.GetAllRoles(queryVal, queryOp, order,
 		limit, offset)
 	if err != nil {
-		beego.Debug("get err ", err)
+		beego.Debug("GetAllRole:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		this.ServeJson()
 		return
 	}
+	beego.Debug("GetAllRole:", &roles)
 
-	this.Data["json"] = &records
+	for i, _ := range roles {
+		roles[i].ClearPass()
+	}
+
+	this.Data["json"] = &models.RoleGetAllInfo{Code: 0, RolesInfo: roles}
 	this.ServeJson()
 }
 
@@ -188,23 +197,26 @@ func (this *RoleController) Put() {
 	idStr := this.Ctx.Input.Params[":id"]
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
+		beego.Debug("ParseRoleId:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
 	}
+
+	form := models.RolePutForm{}
+	err = json.Unmarshal(this.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		beego.Debug("ParseRolePut:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
+	beego.Debug("ParseRolePut:", &form)
 
 	role := models.Role{}
-	err = json.Unmarshal(this.Ctx.Input.RequestBody, &role)
+	code, err := role.UpdateById(id, &form)
 	if err != nil {
-		beego.Debug("Input err: ", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
-		return
-	}
-
-	code, err := role.UpdateById(id)
-	if err != nil {
-		beego.Debug("Update role:", err)
+		beego.Debug("UpdateRoleById:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		this.ServeJson()
 		return
@@ -222,6 +234,7 @@ func (this *RoleController) Delete() {
 	idStr := this.Ctx.Input.Params[":id"]
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
+		beego.Debug("ParseRoleId:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
