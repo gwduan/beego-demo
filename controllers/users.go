@@ -45,7 +45,13 @@ func (this *UserController) Register() {
 	}
 
 	regDate := time.Now()
-	user := models.NewUser(&form, regDate)
+	user, err := models.NewUser(&form, regDate)
+	if err != nil {
+		beego.Debug("NewUser:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrSystem)
+		this.ServeJson()
+		return
+	}
 	beego.Debug("NewUser:", user)
 
 	if code, err := user.Insert(); err != nil {
@@ -106,7 +112,12 @@ func (this *UserController) Login() {
 	}
 	beego.Debug("UserInfo:", &user)
 
-	if !user.CheckPass(form.Password) {
+	if ok, err := user.CheckPass(form.Password); err != nil {
+		beego.Debug("CheckUserPass:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrSystem)
+		this.ServeJson()
+		return
+	} else if !ok {
 		this.Data["json"] = models.NewErrorInfo(ErrPass)
 		this.ServeJson()
 		return
@@ -198,8 +209,10 @@ func (this *UserController) Passwd() {
 		beego.Debug("ChangeUserPass:", err)
 		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
-		} else {
+		} else if code == -1 {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+		} else {
+			this.Data["json"] = models.NewErrorInfo(ErrSystem)
 		}
 		this.ServeJson()
 		return

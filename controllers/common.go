@@ -11,4 +11,5 @@ const (
 	ErrInvalidUser  = "用户信息不正确"
 	ErrOpenFile     = "打开文件出错"
 	ErrWriteFile    = "写文件出错"
+	ErrSystem       = "操作系统错误"
 )
