@@ -4,6 +4,7 @@ import (
 	"beego-demo/models/mymysql"
 	"database/sql"
 	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/go-sql-driver/mysql"
 	"time"
 )
@@ -19,8 +20,8 @@ func NewRole(f *RolePostForm, t time.Time) *Role {
 	role := Role{
 		Id:       f.Id,
 		Name:     f.Name,
-		Password: f.Password}
-	role.RegDate = t
+		Password: f.Password,
+		RegDate:  t}
 
 	return &role
 }
@@ -29,9 +30,11 @@ func (r *Role) Insert() (code int, err error) {
 	db := mymysql.Conn()
 
 	//if result, err := db.Exec(
-	if _, err := db.Exec("INSERT INTO roles(id, name, password, reg_date) VALUES(?, ?, ?, ?)", r.Id, r.Name, r.Password, r.RegDate); err != nil {
+	if _, err := db.Exec("INSERT INTO roles(id, name, password, reg_date)"+
+		" VALUES(?, ?, ?, ?)", r.Id, r.Name, r.Password,
+		r.RegDate); err != nil {
 		if e, ok := err.(*mysql.MySQLError); ok {
-			//duplicate key
+			//Duplicate key
 			if e.Number == 1062 {
 				return 100, err
 			} else {
@@ -50,7 +53,8 @@ func (r *Role) Insert() (code int, err error) {
 func (r *Role) FindById(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
-	row := db.QueryRow("SELECT id, name, password, reg_date FROM roles WHERE id = ?", id)
+	row := db.QueryRow("SELECT id, name, password, reg_date FROM roles"+
+		" WHERE id = ?", id)
 	var tmpId sql.NullInt64
 	var tmpName sql.NullString
 	var tmpPassword sql.NullString
@@ -125,7 +129,7 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 	if offset > 0 {
 		sqlStr += " OFFSET " + fmt.Sprintf("%d", offset)
 	}
-	fmt.Println("sqlStr ", sqlStr)
+	beego.Debug("sqlStr:", sqlStr)
 
 	db := mymysql.Conn()
 	rows, err := db.Query(sqlStr)
@@ -134,7 +138,7 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 	}
 	defer rows.Close()
 
-	records = make([]Role, 0)
+	records = make([]Role, 0, limit)
 	for rows.Next() {
 		var tmpId sql.NullInt64
 		var tmpName sql.NullString
@@ -170,7 +174,8 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
 	db := mymysql.Conn()
 
-	result, err := db.Exec("UPDATE roles SET name = ?, password = ? WHERE id = ?", f.Name, f.Password, id)
+	result, err := db.Exec("UPDATE roles SET name = ?, password = ?"+
+		" WHERE id = ?", f.Name, f.Password, id)
 	if err != nil {
 		return -1, err
 	}
