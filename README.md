@@ -46,6 +46,8 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 | password | varchar(255) | YES  |
 | reg_date | datetime     | YES  |
 
+建数据库表的脚本：scripts/sql/db.sql。
+
 多记录api，提供如下参数：
 * query=col1:op1:val1,col2:op2:val2 ...
 * order=col1:asc|desc,col2:asc|esc ...
