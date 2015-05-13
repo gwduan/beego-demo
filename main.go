@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	_ "github.com/astaxie/beego/session/redis"
+	"os"
+	"os/signal"
 	"os/user"
 	"strconv"
 	"syscall"
@@ -28,8 +30,24 @@ func setUserId() {
 	}
 }
 
+func handleSignals(c chan os.Signal) {
+	switch <-c {
+	case syscall.SIGINT, syscall.SIGTERM:
+		fmt.Println("Shutdown quickly, bye...")
+	case syscall.SIGQUIT:
+		fmt.Println("Shutdown gracefully, bye...")
+		// do graceful shutdown
+	}
+
+	os.Exit(0)
+}
+
 func main() {
 	setUserId()
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go handleSignals(sigs)
 
 	beego.SetLogger("file", `{"filename":"logs/test.log"}`)
 	//beego.SetLevel(beego.LevelInformational)
