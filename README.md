@@ -2,23 +2,23 @@
 
 A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 
-这是一个基于[Beego](http://beego.me)框架构建的应用demo，后台数据库使用[MongoDB](http://www.mongodb.org)和[MySQL](http://www.mysql.com)，并使用[Redis](http://redis.io)存储session和一些统计数据。
+这是一个基于 [Beego](http://beego.me) 框架构建的应用 demo，后台数据库使用 [MongoDB](http://www.mongodb.org) 和 [MySQL](http://www.mysql.com)，并使用 [Redis](http://redis.io) 存储 session 和一些统计数据。
 
 ## API列表1
 
-该部分使用的数据库是MongoDB。
+该部分使用的数据库是 MongoDB。
 
 | 功能 | URL | Mode |
 |------|:-----|------|
 | 注册 | /v1/users/register | POST |
 | 登录 | /v1/users/login    | POST |
-| 登出 | /v1/users/logout   | POST |
-| 修改密码 | /v1/users/passwd   | POST |
+| 登出    | /v1/users/logout   | POST |
+| 修改密码   | /v1/users/passwd   | POST |
 | 上传多个文件 | /v1/users/uploads   | POST |
 
-输入数据通过form表单提交，返回数据均为json。
+输入数据通过 form 表单提交，返回数据均为 json。
 
-在static/test/目录下有如下的测试表单，除了用于测试外，也可看出具体的数据通讯协议：
+在 static/test 目录下有如下的测试表单，除了用于测试外，也可看出具体的数据通讯协议：
 * register.html
 * login.html
 * logout.html
@@ -27,7 +27,7 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 
 ## API列表2
 
-该部分使用的数据库是MySQL。
+该部分使用的数据库是 MySQL。
 
 | 功能 | URL | Mode |
 |------|:-----|------|
@@ -46,15 +46,15 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 | password | varchar(255) | YES  |
 | reg_date | datetime     | YES  |
 
-建数据库表的脚本：scripts/sql/db.sql。
+建数据库表的脚本位于：scripts/sql/db.sql。
 
-多记录api，提供如下参数：
+多记录 api，提供如下参数：
 * query=col1:op1:val1,col2:op2:val2 ...
 * order=col1:asc|desc,col2:asc|esc ...
-* limit=n，缺省为10
-* offset=n，缺省为0
+* limit=n，缺省为 10
+* offset=n，缺省为 0
 
-query的op值：
+query 的 op 值：
 * eq，等于
 * ne，不等于
 * gt，大于
@@ -66,33 +66,33 @@ query的op值：
 
 ### GO语言
 
-包括安装go，设置$GOPATH等，具体可参考：[How to Write Go Code](http://golang.org/doc/code.html)。
+包括安装 go，设置 $GOPATH 等，具体可参考：[How to Write Go Code](http://golang.org/doc/code.html)。
 
 ### MongoDB
 
-在conf/app.conf中设置MongoDB参数，如：
+在 conf/app.conf 中设置 MongoDB 参数，如：
 
 ```
 [mongodb]
 url = mongodb://127.0.0.1:27017/beego-demo
 ```
 
-完整的url写法可参考：http://godoc.org/gopkg.in/mgo.v2#Dial
+完整的 url 写法可参考：http://godoc.org/gopkg.in/mgo.v2#Dial
 
 ### MySQL
 
-在conf/app.conf中设置MySQL参数，如：
+在 conf/app.conf 中设置 MySQL 参数，如：
 
 ```
 [mysql]
 url = root:root@/beego-demo?charset=utf8&parseTime=True&loc=Local
 ```
 
-完整的url写法可参考：https://github.com/go-sql-driver/mysql#dsn-data-source-name
+完整的 url 写法可参考：https://github.com/go-sql-driver/mysql#dsn-data-source-name
 
 ### Redis
 
-在conf/app.conf中设置Redis参数，涉及两个地方，一个是session，一个是cache，两者可以不同：
+在 conf/app.conf 中设置 Redis 参数，涉及两个地方，一个是 session，一个是 cache，两者可以不同：
 
 ```
 sessionsavepath = 127.0.0.1:6379
@@ -120,17 +120,42 @@ $ go get -u golang.org/x/crypto/scrypt
 
 ```
 $ bee version
-bee   :1.2.4
+bee   :1.3.0
 beego :1.4.3
-Go    :go version go1.4.2 darwin/amd64
+Go    :go version go1.4.2 linux/amd64
 ```
 
 ## 运行
 
-将代码放在$GOPATH/src/目录下，运行（开发模式）：
+将代码放在 $GOPATH/src 目录下，运行（调试模式）：
 
 ```
 $ cd $GOPATH/src/beego-demo/
 $ bee run
 ```
 
+正式部署时，可通过系统的 Init 服务来启动。在 scripts 目录下有 upstart 和 systemd 两套简易示例脚本，可参考使用。
+
+例如，在 CentOS 6 下，复制 upstart/bdemo.conf 到 /etc/init/，相应修改后，执行：
+
+```
+# start bdemo
+```
+
+在 CentOS 7 下，复制 systemd/bdemo.service 到 /etc/systemd/system/，相应修改后，执行：
+
+```
+# systemctl daemon-reload
+# systemctl enable bdemo.service
+# systemctl start bdemo.service
+```
+
+由于 Init 是由 root 控制的，相应的服务缺省也具有 root 权限，故应用做了降权处理，在 conf/app.conf 中设置实际运行的普通用户：
+
+```
+user = bdemo
+```
+
+应用启动后，会放弃 root 身份，降级到该用户。
+
+此方案的问题在于普通用户无法绑定特权端口（如 80 ），不过实际环境下，还是建议在前面部署 Nginx 等成熟的 web 服务器，通过反向代理来访问应用。
