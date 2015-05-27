@@ -19,8 +19,7 @@ func (this *RoleController) Post() {
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRolePost:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	}
 	beego.Debug("ParseRolePost:", &form)
@@ -32,16 +31,15 @@ func (this *RoleController) Post() {
 	if code, err := role.Insert(); err != nil {
 		beego.Debug("InsertRole:", err)
 		if code == 100 {
-			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
+			this.CustomAbort(errDupUser.Ret())
 		} else {
-			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+			this.CustomAbort(errDatabase.Ret())
 		}
-		this.ServeJson()
 		return
 	}
 
-	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJson()
+	//this.Data["json"] = models.NewNormalInfo("Succes")
+	//this.ServeJson()
 }
 
 func (this *RoleController) GetOne() {
@@ -49,8 +47,7 @@ func (this *RoleController) GetOne() {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	}
 
@@ -58,18 +55,17 @@ func (this *RoleController) GetOne() {
 	if code, err := role.FindById(id); err != nil {
 		beego.Debug("FindRoleById:", err)
 		if code == 100 {
-			this.Data["json"] = models.NewErrorInfo(ErrNoUser)
+			this.CustomAbort(errNoUser.Ret())
 		} else {
-			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+			this.CustomAbort(errDatabase.Ret())
 		}
-		this.ServeJson()
 		return
 	}
 	beego.Debug("RoleInfo:", &role)
 
 	role.ClearPass()
 
-	this.Data["json"] = &models.RoleGetOneInfo{Code: 0, RoleInfo: &role}
+	this.Data["json"] = &models.RoleGetOneInfo{RoleInfo: &role}
 	this.ServeJson()
 }
 
@@ -91,27 +87,21 @@ func (this *RoleController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kov := strings.Split(cond, ":")
 			if len(kov) != 3 {
-				this.Data["json"] =
-					models.NewErrorInfo(ErrInputData)
-				this.ServeJson()
+				this.CustomAbort(errInputData.Ret())
 				return
 			}
 			var key string
 			var value string
 			var operator string
 			if !nameRule.MatchString(kov[0]) {
-				this.Data["json"] =
-					models.NewErrorInfo(ErrInputData)
-				this.ServeJson()
+				this.CustomAbort(errInputData.Ret())
 				return
 			}
 			key = kov[0]
 			if op, ok := sqlOp[kov[1]]; ok {
 				operator = op
 			} else {
-				this.Data["json"] =
-					models.NewErrorInfo(ErrInputData)
-				this.ServeJson()
+				this.CustomAbort(errInputData.Ret())
 				return
 			}
 			value = strings.Replace(kov[2], "'", "\\'", -1)
@@ -128,21 +118,15 @@ func (this *RoleController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.Split(cond, ":")
 			if len(kv) != 2 {
-				this.Data["json"] =
-					models.NewErrorInfo(ErrInputData)
-				this.ServeJson()
+				this.CustomAbort(errInputData.Ret())
 				return
 			}
 			if !nameRule.MatchString(kv[0]) {
-				this.Data["json"] =
-					models.NewErrorInfo(ErrInputData)
-				this.ServeJson()
+				this.CustomAbort(errInputData.Ret())
 				return
 			}
 			if kv[1] != "asc" && kv[1] != "desc" {
-				this.Data["json"] =
-					models.NewErrorInfo(ErrInputData)
-				this.ServeJson()
+				this.CustomAbort(errInputData.Ret())
 				return
 			}
 
@@ -153,8 +137,7 @@ func (this *RoleController) GetAll() {
 
 	var limit int64 = 10
 	if v, err := this.GetInt64("limit"); err != nil {
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	} else {
 		if v > 0 {
@@ -165,8 +148,7 @@ func (this *RoleController) GetAll() {
 
 	var offset int64 = 0
 	if v, err := this.GetInt64("offset"); err != nil {
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	} else {
 		if v > 0 {
@@ -179,8 +161,7 @@ func (this *RoleController) GetAll() {
 		limit, offset)
 	if err != nil {
 		beego.Debug("GetAllRole:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrDatabase)
-		this.ServeJson()
+		this.CustomAbort(errDatabase.Ret())
 		return
 	}
 	beego.Debug("GetAllRole:", &roles)
@@ -189,7 +170,7 @@ func (this *RoleController) GetAll() {
 		roles[i].ClearPass()
 	}
 
-	this.Data["json"] = &models.RoleGetAllInfo{Code: 0, RolesInfo: roles}
+	this.Data["json"] = &models.RoleGetAllInfo{RolesInfo: roles}
 	this.ServeJson()
 }
 
@@ -198,8 +179,7 @@ func (this *RoleController) Put() {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	}
 
@@ -207,27 +187,23 @@ func (this *RoleController) Put() {
 	err = json.Unmarshal(this.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRolePut:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	}
 	beego.Debug("ParseRolePut:", &form)
 
 	role := models.Role{}
-	code, err := role.UpdateById(id, &form)
-	if err != nil {
+	if code, err := role.UpdateById(id, &form); err != nil {
 		beego.Debug("UpdateRoleById:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrDatabase)
-		this.ServeJson()
+		this.CustomAbort(errDatabase.Ret())
+		return
+	} else if code == 100 {
+		this.CustomAbort(errNoUserChange.Ret())
 		return
 	}
 
-	if code == 100 {
-		this.Data["json"] = models.NewErrorInfo(ErrNoUserChange)
-	} else {
-		this.Data["json"] = models.NewNormalInfo("Succes")
-	}
-	this.ServeJson()
+	//this.Data["json"] = models.NewNormalInfo("Succes")
+	//this.ServeJson()
 }
 
 func (this *RoleController) Delete() {
@@ -235,24 +211,20 @@ func (this *RoleController) Delete() {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.CustomAbort(errInputData.Ret())
 		return
 	}
 
 	role := models.Role{}
-	code, err := role.DeleteById(id)
-	if err != nil {
+	if code, err := role.DeleteById(id); err != nil {
 		beego.Debug("DeleteRoleById:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrDatabase)
-		this.ServeJson()
+		this.CustomAbort(errDatabase.Ret())
+		return
+	} else if code == 100 {
+		this.CustomAbort(errNoUser.Ret())
 		return
 	}
 
-	if code == 100 {
-		this.Data["json"] = models.NewErrorInfo(ErrNoUser)
-	} else {
-		this.Data["json"] = models.NewNormalInfo("Succes")
-	}
-	this.ServeJson()
+	//this.Data["json"] = models.NewNormalInfo("Succes")
+	//this.ServeJson()
 }

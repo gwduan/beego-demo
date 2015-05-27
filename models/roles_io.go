@@ -7,12 +7,10 @@ type RolePostForm struct {
 }
 
 type RoleGetOneInfo struct {
-	Code     int   `json:"code"`
 	RoleInfo *Role `json:"role"`
 }
 
 type RoleGetAllInfo struct {
-	Code      int    `json:"code"`
 	RolesInfo []Role `json:"roles"`
 }
 
