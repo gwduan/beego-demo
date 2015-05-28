@@ -1,6 +1,9 @@
 package controllers
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/astaxie/beego"
+)
 
 const (
 	ErrInputData    = "数据输入错误"
@@ -25,9 +28,13 @@ type ControllerError struct {
 }
 
 func (e *ControllerError) Ret() (status int, body string) {
-	body = fmt.Sprintf(
-		"{status: %d, message: '%s', code: %d, more_info: '%s'}",
-		e.Status, e.Message, e.Code, e.MoreInfo)
+	mode := beego.AppConfig.String("runmode")
+	if mode == "prod" {
+		body = fmt.Sprintf("{status: %d, message: '%s', code: %d, more_info: '%s'}", e.Status, e.Message, e.Code, e.MoreInfo)
+	} else {
+		body = fmt.Sprintf("{status: %d, message: '%s', code: %d, dev_info: '%s', more_info: '%s'}", e.Status, e.Message, e.Code, e.DevInfo, e.MoreInfo)
+	}
+
 	return e.Status, body
 }
 

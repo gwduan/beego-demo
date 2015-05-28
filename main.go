@@ -50,7 +50,10 @@ func main() {
 	go handleSignals(sigs)
 
 	beego.SetLogger("file", `{"filename":"logs/test.log"}`)
-	//beego.SetLevel(beego.LevelInformational)
+	mode := beego.AppConfig.String("runmode")
+	if mode == "prod" {
+		beego.SetLevel(beego.LevelInformational)
+	}
 
 	beego.Run()
 }

@@ -23,7 +23,7 @@ func IncTotalUserCount(t time.Time) error {
 	conn.Send("HINCRBY", d_key, "new_users", 1)
 	r, err := conn.Do("EXEC")
 	if err != nil {
-		beego.Debug("MULTI HINCRBY for new user registeration:", err)
+		beego.Error("MULTI HINCRBY for new user registeration:", err)
 		return err
 	}
 	beego.Debug("MULTI HINCRBY for new user registeration reply:", r)

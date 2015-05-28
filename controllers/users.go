@@ -47,7 +47,7 @@ func (this *UserController) Register() {
 	regDate := time.Now()
 	user, err := models.NewUser(&form, regDate)
 	if err != nil {
-		beego.Debug("NewUser:", err)
+		beego.Error("NewUser:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrSystem)
 		this.ServeJson()
 		return
@@ -55,7 +55,7 @@ func (this *UserController) Register() {
 	beego.Debug("NewUser:", user)
 
 	if code, err := user.Insert(); err != nil {
-		beego.Debug("InsertUser:", err)
+		beego.Error("InsertUser:", err)
 		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
 		} else {
@@ -101,7 +101,7 @@ func (this *UserController) Login() {
 
 	user := models.User{}
 	if code, err := user.FindById(form.Phone); err != nil {
-		beego.Debug("FindUserById:", err)
+		beego.Error("FindUserById:", err)
 		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUser)
 		} else {
@@ -113,7 +113,7 @@ func (this *UserController) Login() {
 	beego.Debug("UserInfo:", &user)
 
 	if ok, err := user.CheckPass(form.Password); err != nil {
-		beego.Debug("CheckUserPass:", err)
+		beego.Error("CheckUserPass:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrSystem)
 		this.ServeJson()
 		return
@@ -206,7 +206,7 @@ func (this *UserController) Passwd() {
 
 	code, err := models.ChangePass(form.Phone, form.OldPass, form.NewPass)
 	if err != nil {
-		beego.Debug("ChangeUserPass:", err)
+		beego.Error("ChangeUserPass:", err)
 		if code == 100 {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
 		} else if code == -1 {
@@ -260,7 +260,7 @@ func (this *UserController) Uploads() {
 	for i, _ := range files {
 		src, err := files[i].Open()
 		if err != nil {
-			beego.Debug("Open MultipartForm File:", err)
+			beego.Error("Open MultipartForm File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrOpenFile)
 			this.ServeJson()
 			return
@@ -269,7 +269,7 @@ func (this *UserController) Uploads() {
 
 		hash := md5.New()
 		if _, err := io.Copy(hash, src); err != nil {
-			beego.Debug("Copy File to Hash:", err)
+			beego.Error("Copy File to Hash:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
 			this.ServeJson()
 			return
@@ -279,7 +279,7 @@ func (this *UserController) Uploads() {
 		dst, err := os.Create(beego.AppConfig.String("apppath") +
 			"static/" + hex + filepath.Ext(files[i].Filename))
 		if err != nil {
-			beego.Debug("Create File:", err)
+			beego.Error("Create File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
 			this.ServeJson()
 		}
@@ -287,7 +287,7 @@ func (this *UserController) Uploads() {
 
 		src.Seek(0, 0)
 		if _, err := io.Copy(dst, src); err != nil {
-			beego.Debug("Copy File:", err)
+			beego.Error("Copy File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
 			this.ServeJson()
 			return

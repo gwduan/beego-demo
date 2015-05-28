@@ -29,7 +29,7 @@ func (this *RoleController) Post() {
 	beego.Debug("NewRole:", role)
 
 	if code, err := role.Insert(); err != nil {
-		beego.Debug("InsertRole:", err)
+		beego.Error("InsertRole:", err)
 		if code == 100 {
 			this.CustomAbort(errDupUser.Ret())
 		} else {
@@ -53,7 +53,7 @@ func (this *RoleController) GetOne() {
 
 	role := models.Role{}
 	if code, err := role.FindById(id); err != nil {
-		beego.Debug("FindRoleById:", err)
+		beego.Error("FindRoleById:", err)
 		if code == 100 {
 			this.CustomAbort(errNoUser.Ret())
 		} else {
@@ -160,7 +160,7 @@ func (this *RoleController) GetAll() {
 	roles, err := models.GetAllRoles(queryVal, queryOp, order,
 		limit, offset)
 	if err != nil {
-		beego.Debug("GetAllRole:", err)
+		beego.Error("GetAllRole:", err)
 		this.CustomAbort(errDatabase.Ret())
 		return
 	}
@@ -194,7 +194,7 @@ func (this *RoleController) Put() {
 
 	role := models.Role{}
 	if code, err := role.UpdateById(id, &form); err != nil {
-		beego.Debug("UpdateRoleById:", err)
+		beego.Error("UpdateRoleById:", err)
 		this.CustomAbort(errDatabase.Ret())
 		return
 	} else if code == 100 {
@@ -217,7 +217,7 @@ func (this *RoleController) Delete() {
 
 	role := models.Role{}
 	if code, err := role.DeleteById(id); err != nil {
-		beego.Debug("DeleteRoleById:", err)
+		beego.Error("DeleteRoleById:", err)
 		this.CustomAbort(errDatabase.Ret())
 		return
 	} else if code == 100 {
