@@ -1,5 +1,12 @@
 package models
 
+const (
+	ErrDatabase = -1
+	ErrSystem   = -2
+	ErrDupRows  = -3
+	ErrNotFound = -4
+)
+
 type CodeInfo struct {
 	Code int    `json:"code"`
 	Info string `json:"info"`

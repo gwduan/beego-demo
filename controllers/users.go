@@ -56,7 +56,7 @@ func (this *UserController) Register() {
 
 	if code, err := user.Insert(); err != nil {
 		beego.Error("InsertUser:", err)
-		if code == 100 {
+		if code == models.ErrDupRows {
 			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
@@ -102,7 +102,7 @@ func (this *UserController) Login() {
 	user := models.User{}
 	if code, err := user.FindById(form.Phone); err != nil {
 		beego.Error("FindUserById:", err)
-		if code == 100 {
+		if code == models.ErrNotFound {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUser)
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
@@ -207,9 +207,9 @@ func (this *UserController) Passwd() {
 	code, err := models.ChangePass(form.Phone, form.OldPass, form.NewPass)
 	if err != nil {
 		beego.Error("ChangeUserPass:", err)
-		if code == 100 {
+		if code == models.ErrNotFound {
 			this.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
-		} else if code == -1 {
+		} else if code == models.ErrDatabase {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrSystem)

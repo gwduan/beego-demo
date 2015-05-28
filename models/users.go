@@ -69,9 +69,9 @@ func (u *User) Insert() (code int, err error) {
 
 	if err != nil {
 		if mgo.IsDup(err) {
-			code = 100
+			code = ErrDupRows
 		} else {
-			code = -1
+			code = ErrDatabase
 		}
 	} else {
 		code = 0
@@ -88,9 +88,9 @@ func (u *User) FindById(id string) (code int, err error) {
 
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			code = 100
+			code = ErrNotFound
 		} else {
-			code = -1
+			code = ErrDatabase
 		}
 	} else {
 		code = 0
@@ -121,32 +121,32 @@ func ChangePass(id, oldPass, newPass string) (code int, err error) {
 	err = c.FindId(id).One(&u)
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			return 100, err
+			return ErrNotFound, err
 		} else {
-			return -1, err
+			return ErrDatabase, err
 		}
 	}
 
 	oldHash, err := generatePassHash(oldPass, u.Salt)
 	if err != nil {
-		return -2, err
+		return ErrSystem, err
 	}
 	newSalt, err := generateSalt()
 	if err != nil {
-		return -2, err
+		return ErrSystem, err
 	}
 	newHash, err := generatePassHash(newPass, newSalt)
 	if err != nil {
-		return -2, err
+		return ErrSystem, err
 	}
 
 	err = c.Update(bson.M{"_id": id, "password": oldHash},
 		bson.M{"$set": bson.M{"password": newHash, "salt": newSalt}})
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			return 100, err
+			return ErrNotFound, err
 		} else {
-			return -1, err
+			return ErrDatabase, err
 		}
 	}
 

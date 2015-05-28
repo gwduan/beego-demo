@@ -36,12 +36,12 @@ func (r *Role) Insert() (code int, err error) {
 		if e, ok := err.(*mysql.MySQLError); ok {
 			//Duplicate key
 			if e.Number == 1062 {
-				return 100, err
+				return ErrDupRows, err
 			} else {
-				return -1, err
+				return ErrDatabase, err
 			}
 		} else {
-			return -1, err
+			return ErrDatabase, err
 		}
 	} else {
 		//r.Id, _ = result.LastInsertId()
@@ -62,9 +62,9 @@ func (r *Role) FindById(id int64) (code int, err error) {
 	if err := row.Scan(&tmpId, &tmpName, &tmpPassword,
 		&tmpRegDate); err != nil {
 		if err == sql.ErrNoRows {
-			return 100, err
+			return ErrNotFound, err
 		} else {
-			return -1, err
+			return ErrDatabase, err
 		}
 	}
 
@@ -177,14 +177,14 @@ func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
 	result, err := db.Exec("UPDATE roles SET name = ?, password = ?"+
 		" WHERE id = ?", f.Name, f.Password, id)
 	if err != nil {
-		return -1, err
+		return ErrDatabase, err
 	}
 
 	num, _ := result.RowsAffected()
 	if num > 0 {
 		return 0, nil
 	} else {
-		return 100, nil
+		return ErrNotFound, nil
 	}
 }
 
@@ -193,13 +193,13 @@ func (r *Role) DeleteById(id int64) (code int, err error) {
 
 	result, err := db.Exec("DELETE FROM roles WHERE id = ?", id)
 	if err != nil {
-		return -1, err
+		return ErrDatabase, err
 	}
 
 	num, _ := result.RowsAffected()
 	if num > 0 {
 		return 0, nil
 	} else {
-		return 100, nil
+		return ErrNotFound, nil
 	}
 }
