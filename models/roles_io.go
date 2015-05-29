@@ -6,6 +6,10 @@ type RolePostForm struct {
 	Password string `json:"password"`
 }
 
+type RolePostInfo struct {
+	RoleInfo *Role `json:"role"`
+}
+
 type RoleGetOneInfo struct {
 	RoleInfo *Role `json:"role"`
 }

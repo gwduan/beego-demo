@@ -11,7 +11,7 @@ import (
 )
 
 type RoleController struct {
-	beego.Controller
+	BaseController
 }
 
 func (this *RoleController) Post() {
@@ -19,7 +19,7 @@ func (this *RoleController) Post() {
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRolePost:", err)
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	}
 	beego.Debug("ParseRolePost:", &form)
@@ -31,15 +31,18 @@ func (this *RoleController) Post() {
 	if code, err := role.Insert(); err != nil {
 		beego.Error("InsertRole:", err)
 		if code == models.ErrDupRows {
-			this.CustomAbort(errDupUser.Ret())
+			this.RetError(errDupUser)
 		} else {
-			this.CustomAbort(errDatabase.Ret())
+			this.RetError(errDatabase)
 		}
 		return
 	}
 
-	//this.Data["json"] = models.NewNormalInfo("Succes")
-	//this.ServeJson()
+	role.ClearPass()
+
+	//this.Ctx.ResponseWriter.WriteHeader(201)
+	this.Data["json"] = &models.RolePostInfo{RoleInfo: role}
+	this.ServeJson()
 }
 
 func (this *RoleController) GetOne() {
@@ -47,7 +50,7 @@ func (this *RoleController) GetOne() {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	}
 
@@ -55,9 +58,9 @@ func (this *RoleController) GetOne() {
 	if code, err := role.FindById(id); err != nil {
 		beego.Error("FindRoleById:", err)
 		if code == models.ErrNotFound {
-			this.CustomAbort(errNoUser.Ret())
+			this.RetError(errNoUser)
 		} else {
-			this.CustomAbort(errDatabase.Ret())
+			this.RetError(errDatabase)
 		}
 		return
 	}
@@ -87,21 +90,21 @@ func (this *RoleController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kov := strings.Split(cond, ":")
 			if len(kov) != 3 {
-				this.CustomAbort(errInputData.Ret())
+				this.RetError(errInputData)
 				return
 			}
 			var key string
 			var value string
 			var operator string
 			if !nameRule.MatchString(kov[0]) {
-				this.CustomAbort(errInputData.Ret())
+				this.RetError(errInputData)
 				return
 			}
 			key = kov[0]
 			if op, ok := sqlOp[kov[1]]; ok {
 				operator = op
 			} else {
-				this.CustomAbort(errInputData.Ret())
+				this.RetError(errInputData)
 				return
 			}
 			value = strings.Replace(kov[2], "'", "\\'", -1)
@@ -118,15 +121,15 @@ func (this *RoleController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.Split(cond, ":")
 			if len(kv) != 2 {
-				this.CustomAbort(errInputData.Ret())
+				this.RetError(errInputData)
 				return
 			}
 			if !nameRule.MatchString(kv[0]) {
-				this.CustomAbort(errInputData.Ret())
+				this.RetError(errInputData)
 				return
 			}
 			if kv[1] != "asc" && kv[1] != "desc" {
-				this.CustomAbort(errInputData.Ret())
+				this.RetError(errInputData)
 				return
 			}
 
@@ -137,7 +140,7 @@ func (this *RoleController) GetAll() {
 
 	var limit int64 = 10
 	if v, err := this.GetInt64("limit"); err != nil {
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	} else {
 		if v > 0 {
@@ -148,7 +151,7 @@ func (this *RoleController) GetAll() {
 
 	var offset int64 = 0
 	if v, err := this.GetInt64("offset"); err != nil {
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	} else {
 		if v > 0 {
@@ -161,7 +164,7 @@ func (this *RoleController) GetAll() {
 		limit, offset)
 	if err != nil {
 		beego.Error("GetAllRole:", err)
-		this.CustomAbort(errDatabase.Ret())
+		this.RetError(errDatabase)
 		return
 	}
 	beego.Debug("GetAllRole:", &roles)
@@ -179,7 +182,7 @@ func (this *RoleController) Put() {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	}
 
@@ -187,7 +190,7 @@ func (this *RoleController) Put() {
 	err = json.Unmarshal(this.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRolePut:", err)
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	}
 	beego.Debug("ParseRolePut:", &form)
@@ -195,10 +198,10 @@ func (this *RoleController) Put() {
 	role := models.Role{}
 	if code, err := role.UpdateById(id, &form); err != nil {
 		beego.Error("UpdateRoleById:", err)
-		this.CustomAbort(errDatabase.Ret())
+		this.RetError(errDatabase)
 		return
 	} else if code == models.ErrNotFound {
-		this.CustomAbort(errNoUserChange.Ret())
+		this.RetError(errNoUserChange)
 		return
 	}
 
@@ -211,17 +214,17 @@ func (this *RoleController) Delete() {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.CustomAbort(errInputData.Ret())
+		this.RetError(errInputData)
 		return
 	}
 
 	role := models.Role{}
 	if code, err := role.DeleteById(id); err != nil {
 		beego.Error("DeleteRoleById:", err)
-		this.CustomAbort(errDatabase.Ret())
+		this.RetError(errDatabase)
 		return
 	} else if code == models.ErrNotFound {
-		this.CustomAbort(errNoUser.Ret())
+		this.RetError(errNoUser)
 		return
 	}
 
