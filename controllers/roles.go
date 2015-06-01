@@ -4,9 +4,7 @@ import (
 	"beego-demo/models"
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -40,7 +38,6 @@ func (this *RoleController) Post() {
 
 	role.ClearPass()
 
-	//this.Ctx.ResponseWriter.WriteHeader(201)
 	this.Data["json"] = &models.RolePostInfo{RoleInfo: role}
 	this.ServeJson()
 }
@@ -72,91 +69,37 @@ func (this *RoleController) GetOne() {
 	this.ServeJson()
 }
 
-var sqlOp = map[string]string{
-	"eq": "=",
-	"ne": "<>",
-	"gt": ">",
-	"ge": ">=",
-	"lt": "<",
-	"le": "<=",
-}
-
 func (this *RoleController) GetAll() {
-	var nameRule = regexp.MustCompile("^[a-zA-Z0-9_]+$")
-
-	var queryVal map[string]string = make(map[string]string)
-	var queryOp map[string]string = make(map[string]string)
-	if v := this.GetString("query"); v != "" {
-		for _, cond := range strings.Split(v, ",") {
-			kov := strings.Split(cond, ":")
-			if len(kov) != 3 {
-				this.RetError(errInputData)
-				return
-			}
-			var key string
-			var value string
-			var operator string
-			if !nameRule.MatchString(kov[0]) {
-				this.RetError(errInputData)
-				return
-			}
-			key = kov[0]
-			if op, ok := sqlOp[kov[1]]; ok {
-				operator = op
-			} else {
-				this.RetError(errInputData)
-				return
-			}
-			value = strings.Replace(kov[2], "'", "\\'", -1)
-
-			queryVal[key] = value
-			queryOp[key] = operator
-		}
+	queryVal, queryOp, err := this.ParseQueryParm()
+	if err != nil {
+		beego.Debug("ParseQuery:", err)
+		this.RetError(errInputData)
+		return
 	}
 	beego.Debug("QueryVal:", queryVal)
 	beego.Debug("QueryOp:", queryOp)
 
-	var order map[string]string = make(map[string]string)
-	if v := this.GetString("order"); v != "" {
-		for _, cond := range strings.Split(v, ",") {
-			kv := strings.Split(cond, ":")
-			if len(kv) != 2 {
-				this.RetError(errInputData)
-				return
-			}
-			if !nameRule.MatchString(kv[0]) {
-				this.RetError(errInputData)
-				return
-			}
-			if kv[1] != "asc" && kv[1] != "desc" {
-				this.RetError(errInputData)
-				return
-			}
-
-			order[kv[0]] = kv[1]
-		}
+	order, err := this.ParseOrderParm()
+	if err != nil {
+		beego.Debug("ParseOrder:", err)
+		this.RetError(errInputData)
+		return
 	}
 	beego.Debug("Order:", order)
 
-	var limit int64 = 10
-	if v, err := this.GetInt64("limit"); err != nil {
+	limit, err := this.ParseLimitParm()
+	if err != nil {
+		beego.Debug("ParseLimit:", err)
 		this.RetError(errInputData)
 		return
-	} else {
-		if v > 0 {
-			limit = v
-		}
 	}
 	beego.Debug("Limit:", limit)
 
-	var offset int64 = 0
-	if v, err := this.GetInt64("offset"); err != nil {
+	offset, err := this.ParseOffsetParm()
+	if err != nil {
+		beego.Debug("ParseOffset:", err)
 		this.RetError(errInputData)
 		return
-	} else {
-		if v > 0 {
-			offset = v
-		}
 	}
 	beego.Debug("Offset:", offset)
 
@@ -205,8 +148,21 @@ func (this *RoleController) Put() {
 		return
 	}
 
-	//this.Data["json"] = models.NewNormalInfo("Succes")
-	//this.ServeJson()
+	if code, err := role.FindById(id); err != nil {
+		beego.Error("FindRoleById:", err)
+		if code == models.ErrNotFound {
+			this.RetError(errNoUser)
+		} else {
+			this.RetError(errDatabase)
+		}
+		return
+	}
+	beego.Debug("NewRoleInfo:", &role)
+
+	role.ClearPass()
+
+	this.Data["json"] = &models.RolePutInfo{RoleInfo: &role}
+	this.ServeJson()
 }
 
 func (this *RoleController) Delete() {
@@ -227,7 +183,4 @@ func (this *RoleController) Delete() {
 		this.RetError(errNoUser)
 		return
 	}
-
-	//this.Data["json"] = models.NewNormalInfo("Succes")
-	//this.ServeJson()
 }

@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"errors"
 	"github.com/astaxie/beego"
+	"regexp"
+	"strings"
 )
 
 const (
@@ -55,4 +58,100 @@ func (this *BaseController) RetError(e *ControllerError) {
 	this.ServeJson()
 
 	this.StopRun()
+}
+
+var sqlOp = map[string]string{
+	"eq": "=",
+	"ne": "<>",
+	"gt": ">",
+	"ge": ">=",
+	"lt": "<",
+	"le": "<=",
+}
+
+func (this *BaseController) ParseQueryParm() (v map[string]string, o map[string]string, err error) {
+	var nameRule = regexp.MustCompile("^[a-zA-Z0-9_]+$")
+	var queryVal map[string]string = make(map[string]string)
+	var queryOp map[string]string = make(map[string]string)
+
+	query := this.GetString("query")
+	if query == "" {
+		return queryVal, queryOp, nil
+	}
+
+	for _, cond := range strings.Split(query, ",") {
+		kov := strings.Split(cond, ":")
+		if len(kov) != 3 {
+			return queryVal, queryOp,
+				errors.New("Query format != k:o:v")
+		}
+
+		var key string
+		var value string
+		var operator string
+		if !nameRule.MatchString(kov[0]) {
+			return queryVal, queryOp,
+				errors.New("Query key format is wrong")
+		}
+		key = kov[0]
+		if op, ok := sqlOp[kov[1]]; ok {
+			operator = op
+		} else {
+			return queryVal, queryOp,
+				errors.New("Query operator is wrong")
+		}
+		value = strings.Replace(kov[2], "'", "\\'", -1)
+
+		queryVal[key] = value
+		queryOp[key] = operator
+	}
+
+	return queryVal, queryOp, nil
+}
+
+func (this *BaseController) ParseOrderParm() (o map[string]string, err error) {
+	var nameRule = regexp.MustCompile("^[a-zA-Z0-9_]+$")
+	var order map[string]string = make(map[string]string)
+
+	v := this.GetString("order")
+	if v == "" {
+		return order, nil
+	}
+
+	for _, cond := range strings.Split(v, ",") {
+		kv := strings.Split(cond, ":")
+		if len(kv) != 2 {
+			return order, errors.New("Order format != k:v")
+		}
+		if !nameRule.MatchString(kv[0]) {
+			return order, errors.New("Order key format is wrong")
+		}
+		if kv[1] != "asc" && kv[1] != "desc" {
+			return order, errors.New("Order val isn't asc/desc")
+		}
+
+		order[kv[0]] = kv[1]
+	}
+
+	return order, nil
+}
+
+func (this *BaseController) ParseLimitParm() (l int64, err error) {
+	if v, err := this.GetInt64("limit"); err != nil {
+		return 10, err
+	} else if v > 0 {
+		return v, nil
+	} else {
+		return 10, nil
+	}
+}
+
+func (this *BaseController) ParseOffsetParm() (o int64, err error) {
+	if v, err := this.GetInt64("offset"); err != nil {
+		return 0, err
+	} else if v > 0 {
+		return v, nil
+	} else {
+		return 0, nil
+	}
 }

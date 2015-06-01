@@ -22,3 +22,7 @@ type RolePutForm struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 }
+
+type RolePutInfo struct {
+	RoleInfo *Role `json:"role"`
+}
