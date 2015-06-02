@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/validation"
 	"io"
 	"os"
 	"path/filepath"
@@ -13,7 +12,7 @@ import (
 )
 
 type UserController struct {
-	beego.Controller
+	BaseController
 }
 
 func (this *UserController) Register() {
@@ -26,19 +25,8 @@ func (this *UserController) Register() {
 	}
 	beego.Debug("ParseRegsiterForm:", &form)
 
-	valid := validation.Validation{}
-	ok, err := valid.Valid(&form)
-	if err != nil {
+	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidRegsiterForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
-		return
-	}
-	if !ok {
-		beego.Debug("ValidRegsiterForm errors:")
-		for _, err := range valid.Errors {
-			beego.Debug(err.Key, err.Message)
-		}
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
@@ -81,19 +69,8 @@ func (this *UserController) Login() {
 	}
 	beego.Debug("ParseLoginForm:", &form)
 
-	valid := validation.Validation{}
-	ok, err := valid.Valid(&form)
-	if err != nil {
+	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidLoginForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
-		return
-	}
-	if !ok {
-		beego.Debug("ValidLoginForm errors:")
-		for _, err := range valid.Errors {
-			beego.Debug(err.Key, err.Message)
-		}
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
@@ -140,19 +117,8 @@ func (this *UserController) Logout() {
 	}
 	beego.Debug("ParseLogoutForm:", &form)
 
-	valid := validation.Validation{}
-	ok, err := valid.Valid(&form)
-	if err != nil {
+	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidLogoutForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
-		return
-	}
-	if !ok {
-		beego.Debug("ValidLogoutForm errors:")
-		for _, err := range valid.Errors {
-			beego.Debug(err.Key, err.Message)
-		}
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
@@ -180,19 +146,8 @@ func (this *UserController) Passwd() {
 	}
 	beego.Debug("ParsePasswdForm:", &form)
 
-	valid := validation.Validation{}
-	ok, err := valid.Valid(&form)
-	if err != nil {
+	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidPasswdForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
-		return
-	}
-	if !ok {
-		beego.Debug("ValidPasswdForm errors:")
-		for _, err := range valid.Errors {
-			beego.Debug(err.Key, err.Message)
-		}
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
@@ -232,19 +187,8 @@ func (this *UserController) Uploads() {
 	}
 	beego.Debug("ParseUploadsForm:", &form)
 
-	valid := validation.Validation{}
-	ok, err := valid.Valid(&form)
-	if err != nil {
+	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidUploadsForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
-		return
-	}
-	if !ok {
-		beego.Debug("ValidUploadsForm errors:")
-		for _, err := range valid.Errors {
-			beego.Debug(err.Key, err.Message)
-		}
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
 		this.ServeJson()
 		return
