@@ -7,25 +7,35 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
-	beego.Router("/v1/users/register",
-		&controllers.UserController{}, "post:Register")
-	beego.Router("/v1/users/login",
-		&controllers.UserController{}, "post:Login")
-	beego.Router("/v1/users/logout",
-		&controllers.UserController{}, "post:Logout")
-	beego.Router("/v1/users/passwd",
-		&controllers.UserController{}, "post:Passwd")
-	beego.Router("/v1/users/uploads",
-		&controllers.UserController{}, "post:Uploads")
-
-	beego.Router("/v1/roles/:id",
-		&controllers.RoleController{}, "get:GetOne")
-	beego.Router("/v1/roles",
-		&controllers.RoleController{}, "get:GetAll")
-	beego.Router("/v1/roles",
-		&controllers.RoleController{}, "post:Post")
-	beego.Router("/v1/roles/:id",
-		&controllers.RoleController{}, "put:Put")
-	beego.Router("/v1/roles/:id",
-		&controllers.RoleController{}, "delete:Delete")
+	ns := beego.NewNamespace("/v1",
+		beego.NSNamespace("/users",
+			beego.NSRouter("/register",
+				&controllers.UserController{},
+				"post:Register"),
+			beego.NSRouter("/login",
+				&controllers.UserController{},
+				"post:Login"),
+			beego.NSRouter("/logout",
+				&controllers.UserController{},
+				"post:Logout"),
+			beego.NSRouter("/passwd",
+				&controllers.UserController{},
+				"post:Passwd"),
+			beego.NSRouter("/uploads",
+				&controllers.UserController{},
+				"post:Uploads"),
+			beego.NSRouter("/downloads",
+				&controllers.UserController{},
+				"get:Downloads"),
+		),
+		beego.NSNamespace("/roles",
+			beego.NSRouter("/:id",
+				&controllers.RoleController{},
+				"get:GetOne;put:Put;delete:Delete"),
+			beego.NSRouter("/",
+				&controllers.RoleController{},
+				"get:GetAll;post:Post"),
+		),
+	)
+	beego.AddNamespace(ns)
 }

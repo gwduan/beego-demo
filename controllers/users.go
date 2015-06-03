@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -240,4 +241,15 @@ func (this *UserController) Uploads() {
 
 	this.Data["json"] = models.NewNormalInfo("Succes")
 	this.ServeJson()
+}
+
+func (this *UserController) Downloads() {
+	if this.GetSession("user_id") == nil {
+		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		this.ServeJson()
+		return
+	}
+
+	file := beego.AppConfig.String("apppath") + "logs/test.log"
+	http.ServeFile(this.Ctx.ResponseWriter, this.Ctx.Request, file)
 }
