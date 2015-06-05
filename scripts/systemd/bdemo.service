@@ -6,6 +6,8 @@ After=network.target
 ExecStart=/var/beego-demo/beego-demo
 LimitNOFILE=65535
 Restart=on-failure
+#User=bdemo
+#Group=bdemo
 
 [Install]
 WantedBy=multi-user.target

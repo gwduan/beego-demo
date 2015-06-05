@@ -43,7 +43,7 @@ func handleSignals(c chan os.Signal) {
 }
 
 func main() {
-	setUserId()
+	//setUserId()
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
