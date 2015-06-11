@@ -12,11 +12,11 @@ import (
 )
 
 type User struct {
-	ID       string    `bson:"_id"      json:"_id"`
-	Name     string    `bson:"name"     json:"name"`
-	Password string    `bson:"password" json:"password"`
-	Salt     string    `bson:"salt"     json:"salt"`
-	RegDate  time.Time `bson:"reg_date" json:"reg_date"`
+	ID       string    `bson:"_id"      json:"_id,omitempty"`
+	Name     string    `bson:"name"     json:"name,omitempty"`
+	Password string    `bson:"password" json:"password,omitempty"`
+	Salt     string    `bson:"salt"     json:"salt,omitempty"`
+	RegDate  time.Time `bson:"reg_date" json:"reg_date,omitempty"`
 }
 
 const PW_HASH_BYTES = 64

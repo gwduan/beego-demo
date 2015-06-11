@@ -10,10 +10,10 @@ import (
 )
 
 type Role struct {
-	Id       int64     `json:"id"`
-	Name     string    `json:"name"`
-	Password string    `json:"password"`
-	RegDate  time.Time `json:"reg_date"`
+	Id       int64     `json:"id,omitempty"`
+	Name     string    `json:"name,omitempty"`
+	Password string    `json:"password,omitempty"`
+	RegDate  time.Time `json:"reg_date,omitempty"`
 }
 
 func NewRole(f *RolePostForm, t time.Time) *Role {
