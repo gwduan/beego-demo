@@ -88,19 +88,23 @@ func (this *RoleController) GetAll() {
 	beego.Debug("Order:", order)
 
 	limit, err := this.ParseLimitParm()
-	if err != nil {
-		beego.Debug("ParseLimit:", err)
-		this.RetError(errInputData)
-		return
-	}
+	/*
+		if err != nil {
+			beego.Debug("ParseLimit:", err)
+			this.RetError(errInputData)
+			return
+		}
+	*/
 	beego.Debug("Limit:", limit)
 
 	offset, err := this.ParseOffsetParm()
-	if err != nil {
-		beego.Debug("ParseOffset:", err)
-		this.RetError(errInputData)
-		return
-	}
+	/*
+		if err != nil {
+			beego.Debug("ParseOffset:", err)
+			this.RetError(errInputData)
+			return
+		}
+	*/
 	beego.Debug("Offset:", offset)
 
 	roles, err := models.GetAllRoles(queryVal, queryOp, order,

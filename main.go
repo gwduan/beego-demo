@@ -45,9 +45,13 @@ func handleSignals(c chan os.Signal) {
 func main() {
 	//setUserId()
 
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	go handleSignals(sigs)
+	graceful, _ := beego.AppConfig.Bool("graceful")
+	if !graceful {
+		sigs := make(chan os.Signal, 1)
+		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM,
+			syscall.SIGQUIT)
+		go handleSignals(sigs)
+	}
 
 	beego.SetLogger("file", `{"filename":"logs/test.log"}`)
 	mode := beego.AppConfig.String("runmode")
