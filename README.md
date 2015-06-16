@@ -142,7 +142,7 @@ $ go get -u golang.org/x/crypto/scrypt
 ```
 $ bee version
 bee   :1.3.0
-beego :1.4.3
+beego :1.5.0
 Go    :go version go1.4.2 linux/amd64
 ```
 
