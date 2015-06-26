@@ -29,10 +29,14 @@ func NewRole(f *RolePostForm, t time.Time) *Role {
 func (r *Role) Insert() (code int, err error) {
 	db := mymysql.Conn()
 
-	//if result, err := db.Exec(
-	if _, err := db.Exec("INSERT INTO roles(id, name, password, reg_date)"+
-		" VALUES(?, ?, ?, ?)", r.Id, r.Name, r.Password,
-		r.RegDate); err != nil {
+	st, err := db.Prepare("INSERT INTO roles(id, name, password, reg_date) VALUES(?, ?, ?, ?)")
+	if err != nil {
+		return ErrDatabase, err
+	}
+	defer st.Close()
+
+	//if result, err := st.Exec(
+	if _, err := st.Exec(r.Id, r.Name, r.Password, r.RegDate); err != nil {
 		if e, ok := err.(*mysql.MySQLError); ok {
 			//Duplicate key
 			if e.Number == 1062 {
@@ -53,8 +57,14 @@ func (r *Role) Insert() (code int, err error) {
 func (r *Role) FindById(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
-	row := db.QueryRow("SELECT id, name, password, reg_date FROM roles"+
-		" WHERE id = ?", id)
+	st, err := db.Prepare("SELECT id, name, password, reg_date FROM roles WHERE id = ?")
+	if err != nil {
+		return ErrDatabase, err
+	}
+	defer st.Close()
+
+	row := st.QueryRow(id)
+
 	var tmpId sql.NullInt64
 	var tmpName sql.NullString
 	var tmpPassword sql.NullString
@@ -132,7 +142,14 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 	beego.Debug("sqlStr:", sqlStr)
 
 	db := mymysql.Conn()
-	rows, err := db.Query(sqlStr)
+
+	st, err := db.Prepare(sqlStr)
+	if err != nil {
+		return nil, err
+	}
+	defer st.Close()
+
+	rows, err := st.Query()
 	if err != nil {
 		return nil, err
 	}
@@ -174,8 +191,13 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
 	db := mymysql.Conn()
 
-	result, err := db.Exec("UPDATE roles SET name = ?, password = ?"+
-		" WHERE id = ?", f.Name, f.Password, id)
+	st, err := db.Prepare("UPDATE roles SET name = ?, password = ? WHERE id = ?")
+	if err != nil {
+		return ErrDatabase, err
+	}
+	defer st.Close()
+
+	result, err := st.Exec(f.Name, f.Password, id)
 	if err != nil {
 		return ErrDatabase, err
 	}
@@ -191,7 +213,13 @@ func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
 func (r *Role) DeleteById(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
-	result, err := db.Exec("DELETE FROM roles WHERE id = ?", id)
+	st, err := db.Prepare("DELETE FROM roles WHERE id = ?")
+	if err != nil {
+		return ErrDatabase, err
+	}
+	defer st.Close()
+
+	result, err := st.Exec(id)
 	if err != nil {
 		return ErrDatabase, err
 	}
