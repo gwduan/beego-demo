@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"errors"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/validation"
+	"github.com/gwduan/beego"
+	"github.com/gwduan/beego/validation"
 	"regexp"
 	"strings"
 )
@@ -56,7 +56,7 @@ func (this *BaseController) RetError(e *ControllerError) {
 	this.Ctx.Output.Header("Content-Type", "application/json; charset=utf-8")
 	this.Ctx.ResponseWriter.WriteHeader(e.Status)
 	this.Data["json"] = e
-	this.ServeJson()
+	this.ServeJSON()
 
 	this.StopRun()
 }

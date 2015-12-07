@@ -3,8 +3,8 @@ package main
 import (
 	_ "beego-demo/routers"
 	"fmt"
-	"github.com/astaxie/beego"
-	_ "github.com/astaxie/beego/session/redis"
+	"github.com/gwduan/beego"
+	_ "github.com/gwduan/beego/session/redis"
 	"os"
 	"os/signal"
 	"os/user"

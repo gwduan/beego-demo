@@ -4,7 +4,7 @@ import (
 	"beego-demo/models"
 	"crypto/md5"
 	"fmt"
-	"github.com/astaxie/beego"
+	"github.com/gwduan/beego"
 	"io"
 	"net/http"
 	"os"
@@ -21,7 +21,7 @@ func (this *UserController) Register() {
 	if err := this.ParseForm(&form); err != nil {
 		beego.Debug("ParseRegsiterForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("ParseRegsiterForm:", &form)
@@ -29,7 +29,7 @@ func (this *UserController) Register() {
 	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidRegsiterForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
@@ -38,7 +38,7 @@ func (this *UserController) Register() {
 	if err != nil {
 		beego.Error("NewUser:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrSystem)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("NewUser:", user)
@@ -50,14 +50,14 @@ func (this *UserController) Register() {
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		}
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
 	go models.IncTotalUserCount(regDate)
 
 	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *UserController) Login() {
@@ -65,7 +65,7 @@ func (this *UserController) Login() {
 	if err := this.ParseForm(&form); err != nil {
 		beego.Debug("ParseLoginForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("ParseLoginForm:", &form)
@@ -73,7 +73,7 @@ func (this *UserController) Login() {
 	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidLoginForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
@@ -85,7 +85,7 @@ func (this *UserController) Login() {
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		}
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("UserInfo:", &user)
@@ -93,11 +93,11 @@ func (this *UserController) Login() {
 	if ok, err := user.CheckPass(form.Password); err != nil {
 		beego.Error("CheckUserPass:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrSystem)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	} else if !ok {
 		this.Data["json"] = models.NewErrorInfo(ErrPass)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	user.ClearPass()
@@ -105,7 +105,7 @@ func (this *UserController) Login() {
 	this.SetSession("user_id", form.Phone)
 
 	this.Data["json"] = &models.LoginInfo{Code: 0, UserInfo: &user}
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *UserController) Logout() {
@@ -113,7 +113,7 @@ func (this *UserController) Logout() {
 	if err := this.ParseForm(&form); err != nil {
 		beego.Debug("ParseLogoutForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("ParseLogoutForm:", &form)
@@ -121,20 +121,20 @@ func (this *UserController) Logout() {
 	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidLogoutForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
 	if this.GetSession("user_id") != form.Phone {
 		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
 	this.DelSession("user_id")
 
 	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *UserController) Passwd() {
@@ -142,7 +142,7 @@ func (this *UserController) Passwd() {
 	if err := this.ParseForm(&form); err != nil {
 		beego.Debug("ParsePasswdForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("ParsePasswdForm:", &form)
@@ -150,13 +150,13 @@ func (this *UserController) Passwd() {
 	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidPasswdForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
 	if this.GetSession("user_id") != form.Phone {
 		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
@@ -170,12 +170,12 @@ func (this *UserController) Passwd() {
 		} else {
 			this.Data["json"] = models.NewErrorInfo(ErrSystem)
 		}
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
 	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *UserController) Uploads() {
@@ -183,7 +183,7 @@ func (this *UserController) Uploads() {
 	if err := this.ParseForm(&form); err != nil {
 		beego.Debug("ParseUploadsForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	beego.Debug("ParseUploadsForm:", &form)
@@ -191,13 +191,13 @@ func (this *UserController) Uploads() {
 	if err := this.VerifyForm(&form); err != nil {
 		beego.Debug("ValidUploadsForm:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
 	if this.GetSession("user_id") != form.Phone {
 		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 
@@ -206,7 +206,7 @@ func (this *UserController) Uploads() {
 	if err != nil {
 		beego.Debug("GetFiles:", err)
 		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 	for i, _ := range files {
@@ -214,7 +214,7 @@ func (this *UserController) Uploads() {
 		if err != nil {
 			beego.Error("Open MultipartForm File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrOpenFile)
-			this.ServeJson()
+			this.ServeJSON()
 			return
 		}
 		defer src.Close()
@@ -223,7 +223,7 @@ func (this *UserController) Uploads() {
 		if _, err := io.Copy(hash, src); err != nil {
 			beego.Error("Copy File to Hash:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
-			this.ServeJson()
+			this.ServeJSON()
 			return
 		}
 		hex := fmt.Sprintf("%x", hash.Sum(nil))
@@ -233,7 +233,7 @@ func (this *UserController) Uploads() {
 		if err != nil {
 			beego.Error("Create File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
-			this.ServeJson()
+			this.ServeJSON()
 		}
 		defer dst.Close()
 
@@ -241,19 +241,19 @@ func (this *UserController) Uploads() {
 		if _, err := io.Copy(dst, src); err != nil {
 			beego.Error("Copy File:", err)
 			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
-			this.ServeJson()
+			this.ServeJSON()
 			return
 		}
 	}
 
 	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *UserController) Downloads() {
 	if this.GetSession("user_id") == nil {
 		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJson()
+		this.ServeJSON()
 		return
 	}
 

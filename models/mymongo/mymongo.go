@@ -1,7 +1,7 @@
 package mymongo
 
 import (
-	"github.com/astaxie/beego"
+	"github.com/gwduan/beego"
 	"gopkg.in/mgo.v2"
 )
 
