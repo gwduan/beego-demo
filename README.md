@@ -17,8 +17,10 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 | 登出    | /v1/users/logout   | POST |
 | 修改密码   | /v1/users/passwd   | POST |
 | 上传多个文件 | /v1/users/uploads   | POST |
+| 下载文件 | /v1/users/downloads   | GET |
 
 在 static/test 目录下有如下的测试表单，除了用于测试外，也可看出具体的数据通讯协议：
+
 * register.html
 * login.html
 * logout.html
@@ -26,6 +28,7 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 * uploads.html
 
 说明：
+
 * 输入数据通过 form 表单提交，返回数据均为 json。
 * 使用 Beego 的 ParseForm 功能将输入数据解析到 struct 中。
 * 使用 Beego 的 Validation 功能对数据进行校验。
@@ -57,12 +60,14 @@ roles表结构如下：
 初始建数据库表的脚本位于：scripts/sql/db.sql。
 
 多记录 api，提供如下参数：
+
 * query=col1:op1:val1,col2:op2:val2 ...
 * order=col1:asc|desc,col2:asc|esc ...
 * limit=n，缺省为 10
 * offset=n，缺省为 0
 
 query 的 op 值：
+
 * eq，等于
 * ne，不等于
 * gt，大于
@@ -71,6 +76,7 @@ query 的 op 值：
 * le，小于等于
 
 说明：
+
 * 参考 RESTful 模式设计 API。
 * 输入数据采用 json，返回数据也是 json。
 * 数据库操作使用原生 SQL，没有采用 ORM。
@@ -143,7 +149,7 @@ $ go get -u golang.org/x/crypto/scrypt
 $ bee version
 bee   :1.3.0
 beego :1.5.0
-Go    :go version go1.4.2 linux/amd64
+Go    :go version go1.5.2 linux/amd64
 ```
 
 ## 运行

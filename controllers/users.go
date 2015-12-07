@@ -201,7 +201,14 @@ func (this *UserController) Uploads() {
 		return
 	}
 
-	files := this.Ctx.Request.MultipartForm.File["photos"]
+	//files := this.Ctx.Request.MultipartForm.File["photos"]
+	files, err := this.GetFiles("photos")
+	if err != nil {
+		beego.Debug("GetFiles:", err)
+		this.Data["json"] = models.NewErrorInfo(ErrInputData)
+		this.ServeJson()
+		return
+	}
 	for i, _ := range files {
 		src, err := files[i].Open()
 		if err != nil {
