@@ -42,11 +42,12 @@ A web demo using Beego framework, with MongoDB, MySQL and Redis support.
 
 | 功能 | URL | Mode |
 |------|:-----|------|
-| 获取一个角色信息 | /v1/roles/:id | GET    |
-| 获取所有角色信息 | /v1/roles     | GET    |
-| 新增一个角色信息 | /v1/roles     | POST   |
-| 修改一个角色信息 | /v1/roles/:id | PUT    |
-| 删除一个角色信息 | /v1/roles/:id | DELETE |
+| 获取一个角色信息 | /v1/roles/:id  | GET    |
+| 获取所有角色信息 | /v1/roles      | GET    |
+| 新增一个角色信息 | /v1/roles      | POST   |
+| 修改一个角色信息 | /v1/roles/:id  | PUT    |
+| 删除一个角色信息 | /v1/roles/:id  | DELETE |
+| 认证           | /v1/roles/auth | POST |
 
 roles表结构如下：
 
