@@ -66,7 +66,7 @@ func (this *RoleController) Post() {
 		this.RetError(e)
 		return
 	}
-	if token.Claims["name"] != "admin" {
+	if token.Claims["id"] != "1" {
 		this.RetError(errPermission)
 		return
 	}
@@ -200,7 +200,7 @@ func (this *RoleController) Put() {
 	}
 
 	idStr := this.Ctx.Input.Params[":id"]
-	if token.Claims["id"] != idStr && token.Claims["name"] != "admin" {
+	if token.Claims["id"] != idStr && token.Claims["id"] != "1" {
 		this.RetError(errPermission)
 		return
 	}
@@ -254,7 +254,7 @@ func (this *RoleController) Delete() {
 		this.RetError(e)
 		return
 	}
-	if token.Claims["name"] != "admin" {
+	if token.Claims["id"] != "1" {
 		this.RetError(errPermission)
 		return
 	}
