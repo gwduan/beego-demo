@@ -3,6 +3,7 @@ package controllers
 import (
 	"beego-demo/models"
 	"encoding/json"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gwduan/beego"
 	"strconv"
 	"time"
@@ -12,7 +13,64 @@ type RoleController struct {
 	BaseController
 }
 
+func (this *RoleController) Auth() {
+	form := models.RoleAuthForm{}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		beego.Debug("ParseRoleAuth:", err)
+		this.RetError(errInputData)
+		return
+	}
+	beego.Debug("ParseRoleAuth:", &form)
+
+	role := models.Role{}
+	if code, err := role.FindById(form.Id); err != nil {
+		beego.Error("FindRoleById:", err)
+		if code == models.ErrNotFound {
+			this.RetError(errNoUser)
+		} else {
+			this.RetError(errDatabase)
+		}
+		return
+	}
+	beego.Debug("RoleInfo:", &role)
+
+	if role.Name != form.Name || role.Password != form.Password {
+		this.RetError(errPass)
+		return
+	}
+
+	// Create the token
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Set some claims
+	token.Claims["id"] = strconv.FormatInt(form.Id, 10)
+	token.Claims["name"] = form.Name
+	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Sign and get the complete encoded token as a string
+	tokenString, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		beego.Error("jwt.SignedString:", err)
+		this.RetError(errSystem)
+		return
+	}
+
+	this.Data["json"] = &models.RoleAuthInfo{Token: tokenString}
+	this.ServeJSON()
+}
+
 func (this *RoleController) Post() {
+	token, e := this.ParseToken()
+	if e != nil {
+		this.RetError(e)
+		return
+	}
+	if token.Claims["name"] != "admin" {
+		this.RetError(errPermission)
+		return
+	}
+
 	form := models.RolePostForm{}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -43,6 +101,11 @@ func (this *RoleController) Post() {
 }
 
 func (this *RoleController) GetOne() {
+	if _, e := this.ParseToken(); e != nil {
+		this.RetError(e)
+		return
+	}
+
 	idStr := this.Ctx.Input.Params[":id"]
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
@@ -70,6 +133,11 @@ func (this *RoleController) GetOne() {
 }
 
 func (this *RoleController) GetAll() {
+	if _, e := this.ParseToken(); e != nil {
+		this.RetError(e)
+		return
+	}
+
 	queryVal, queryOp, err := this.ParseQueryParm()
 	if err != nil {
 		beego.Debug("ParseQuery:", err)
@@ -125,7 +193,18 @@ func (this *RoleController) GetAll() {
 }
 
 func (this *RoleController) Put() {
+	token, e := this.ParseToken()
+	if e != nil {
+		this.RetError(e)
+		return
+	}
+
 	idStr := this.Ctx.Input.Params[":id"]
+	if token.Claims["id"] != idStr && token.Claims["name"] != "admin" {
+		this.RetError(errPermission)
+		return
+	}
+
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
@@ -170,6 +249,16 @@ func (this *RoleController) Put() {
 }
 
 func (this *RoleController) Delete() {
+	token, e := this.ParseToken()
+	if e != nil {
+		this.RetError(e)
+		return
+	}
+	if token.Claims["name"] != "admin" {
+		this.RetError(errPermission)
+		return
+	}
+
 	idStr := this.Ctx.Input.Params[":id"]
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {

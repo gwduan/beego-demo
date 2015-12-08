@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gwduan/beego"
 	"github.com/gwduan/beego/validation"
 	"regexp"
@@ -42,6 +43,8 @@ var (
 	errOpenFile     = &ControllerError{500, 10009, "服务器错误", "打开文件出错", ""}
 	errWriteFile    = &ControllerError{500, 10010, "服务器错误", "写文件出错", ""}
 	errSystem       = &ControllerError{500, 10011, "服务器错误", "操作系统错误", ""}
+	errExpired      = &ControllerError{400, 10012, "登录已过期", "验证token过期", ""}
+	errPermission   = &ControllerError{400, 10013, "没有权限", "没有操作权限", ""}
 )
 
 type BaseController struct {
@@ -172,4 +175,46 @@ func (this *BaseController) VerifyForm(obj interface{}) (err error) {
 	}
 
 	return nil
+}
+
+func (this *BaseController) ParseToken() (t *jwt.Token, e *ControllerError) {
+	authString := this.Ctx.Input.Header("Authorization")
+	beego.Debug("AuthString:", authString)
+
+	kv := strings.Split(authString, " ")
+	if len(kv) != 2 || kv[0] != "Bearer" {
+		beego.Error("AuthString invalid:", authString)
+		return nil, errInputData
+	}
+	tokenString := kv[1]
+
+	// Parse token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret"), nil
+	})
+	if err != nil {
+		beego.Error("Parse token:", err)
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+				// That's not even a token
+				return nil, errInputData
+			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+				// Token is either expired or not active yet
+				return nil, errExpired
+			} else {
+				// Couldn't handle this token
+				return nil, errInputData
+			}
+		} else {
+			// Couldn't handle this token
+			return nil, errInputData
+		}
+	}
+	if !token.Valid {
+		beego.Error("Token invalid:", tokenString)
+		return nil, errInputData
+	}
+	beego.Debug("Token:", token)
+
+	return token, nil
 }

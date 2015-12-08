@@ -78,6 +78,7 @@ query 的 op 值：
 说明：
 
 * 参考 RESTful 模式设计 API。
+* 使用 JSON Web Token (JWT) 做认证手段。
 * 输入数据采用 json，返回数据也是 json。
 * 数据库操作使用原生 SQL，没有采用 ORM。
 * 对可能的 NULL 值做了处理。
@@ -141,6 +142,7 @@ $ go get -u gopkg.in/mgo.v2
 $ go get -u github.com/garyburd/redigo/redis
 $ go get -u github.com/go-sql-driver/mysql
 $ go get -u golang.org/x/crypto/scrypt
+$ go get -u github.com/dgrijalva/jwt-go
 ```
 
 当前版本：

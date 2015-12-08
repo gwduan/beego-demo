@@ -35,6 +35,9 @@ func init() {
 			beego.NSRouter("/",
 				&controllers.RoleController{},
 				"get:GetAll;post:Post"),
+			beego.NSRouter("/auth",
+				&controllers.RoleController{},
+				"post:Auth"),
 		),
 	)
 	beego.AddNamespace(ns)

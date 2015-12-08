@@ -5,4 +5,5 @@ CREATE TABLE roles (
   name		VARCHAR(255),
   password	VARCHAR(255),
   reg_date	DATETIME
-)
+);
+INSERT INTO roles VALUES(1, 'admin', 'admin', now());

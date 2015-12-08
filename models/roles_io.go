@@ -26,3 +26,13 @@ type RolePutForm struct {
 type RolePutInfo struct {
 	RoleInfo *Role `json:"role"`
 }
+
+type RoleAuthForm struct {
+	Id       int64  `json:"id"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type RoleAuthInfo struct {
+	Token string `json:"token"`
+}
