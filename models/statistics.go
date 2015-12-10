@@ -3,7 +3,7 @@ package models
 import (
 	"beego-demo/models/myredis"
 	"fmt"
-	"github.com/gwduan/beego"
+	"github.com/astaxie/beego"
 	"time"
 )
 

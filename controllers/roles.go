@@ -3,8 +3,8 @@ package controllers
 import (
 	"beego-demo/models"
 	"encoding/json"
+	"github.com/astaxie/beego"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gwduan/beego"
 	"strconv"
 	"time"
 )
@@ -97,7 +97,7 @@ func (this *RoleController) Post() {
 	role.ClearPass()
 
 	this.Data["json"] = &models.RolePostInfo{RoleInfo: role}
-	this.ServeJSON()
+	this.ServeJson()
 }
 
 func (this *RoleController) GetOne() {
@@ -129,7 +129,7 @@ func (this *RoleController) GetOne() {
 	role.ClearPass()
 
 	this.Data["json"] = &models.RoleGetOneInfo{RoleInfo: &role}
-	this.ServeJSON()
+	this.ServeJson()
 }
 
 func (this *RoleController) GetAll() {
@@ -189,7 +189,7 @@ func (this *RoleController) GetAll() {
 	}
 
 	this.Data["json"] = &models.RoleGetAllInfo{RolesInfo: roles}
-	this.ServeJSON()
+	this.ServeJson()
 }
 
 func (this *RoleController) Put() {
@@ -245,7 +245,7 @@ func (this *RoleController) Put() {
 	role.ClearPass()
 
 	this.Data["json"] = &models.RolePutInfo{RoleInfo: &role}
-	this.ServeJSON()
+	this.ServeJson()
 }
 
 func (this *RoleController) Delete() {

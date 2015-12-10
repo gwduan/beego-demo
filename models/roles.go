@@ -4,8 +4,8 @@ import (
 	"beego-demo/models/mymysql"
 	"database/sql"
 	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/go-sql-driver/mysql"
-	"github.com/gwduan/beego"
 	"time"
 )
 
