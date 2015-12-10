@@ -123,7 +123,7 @@ url = root:root@/beego-demo?charset=utf8&parseTime=True&loc=Local
 在 conf/app.conf 中设置 Redis 参数，涉及两个地方，一个是 session，一个是 cache，两者可以不同：
 
 ```
-sessionproviderconfig = 127.0.0.1:6379
+sessionsavepath = 127.0.0.1:6379
 
 [cache]
 server = 127.0.0.1:6379
