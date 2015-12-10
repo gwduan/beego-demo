@@ -57,7 +57,7 @@ func (this *RoleController) Auth() {
 	}
 
 	this.Data["json"] = &models.RoleAuthInfo{Token: tokenString}
-	this.ServeJSON()
+	this.ServeJson()
 }
 
 func (this *RoleController) Post() {
