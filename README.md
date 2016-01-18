@@ -150,9 +150,9 @@ $ go get -u github.com/dgrijalva/jwt-go
 
 ```
 $ bee version
-bee   :1.3.0
-beego :1.5.0
-Go    :go version go1.5.2 linux/amd64
+bee   :1.4.1
+beego :1.6.0
+Go    :go version go1.5.3 darwin/amd64
 ```
 
 ## 运行
