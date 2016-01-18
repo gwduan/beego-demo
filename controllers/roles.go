@@ -57,7 +57,7 @@ func (this *RoleController) Auth() {
 	}
 
 	this.Data["json"] = &models.RoleAuthInfo{Token: tokenString}
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *RoleController) Post() {
@@ -97,7 +97,7 @@ func (this *RoleController) Post() {
 	role.ClearPass()
 
 	this.Data["json"] = &models.RolePostInfo{RoleInfo: role}
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *RoleController) GetOne() {
@@ -106,7 +106,7 @@ func (this *RoleController) GetOne() {
 		return
 	}
 
-	idStr := this.Ctx.Input.Params[":id"]
+	idStr := this.Ctx.Input.Param(":id")
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
@@ -129,7 +129,7 @@ func (this *RoleController) GetOne() {
 	role.ClearPass()
 
 	this.Data["json"] = &models.RoleGetOneInfo{RoleInfo: &role}
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *RoleController) GetAll() {
@@ -189,7 +189,7 @@ func (this *RoleController) GetAll() {
 	}
 
 	this.Data["json"] = &models.RoleGetAllInfo{RolesInfo: roles}
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *RoleController) Put() {
@@ -199,7 +199,7 @@ func (this *RoleController) Put() {
 		return
 	}
 
-	idStr := this.Ctx.Input.Params[":id"]
+	idStr := this.Ctx.Input.Param(":id")
 	if token.Claims["id"] != idStr && token.Claims["id"] != "1" {
 		this.RetError(errPermission)
 		return
@@ -245,7 +245,7 @@ func (this *RoleController) Put() {
 	role.ClearPass()
 
 	this.Data["json"] = &models.RolePutInfo{RoleInfo: &role}
-	this.ServeJson()
+	this.ServeJSON()
 }
 
 func (this *RoleController) Delete() {
@@ -259,7 +259,7 @@ func (this *RoleController) Delete() {
 		return
 	}
 
-	idStr := this.Ctx.Input.Params[":id"]
+	idStr := this.Ctx.Input.Param(":id")
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)

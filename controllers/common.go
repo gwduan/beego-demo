@@ -59,7 +59,7 @@ func (this *BaseController) RetError(e *ControllerError) {
 	this.Ctx.Output.Header("Content-Type", "application/json; charset=utf-8")
 	this.Ctx.ResponseWriter.WriteHeader(e.Status)
 	this.Data["json"] = e
-	this.ServeJson()
+	this.ServeJSON()
 
 	this.StopRun()
 }
