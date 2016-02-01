@@ -32,6 +32,7 @@ type ControllerError struct {
 }
 
 var (
+	err404          = &ControllerError{404, 404, "page not found", "page not found", ""}
 	errInputData    = &ControllerError{400, 10001, "数据输入错误", "客户端参数错误", ""}
 	errDatabase     = &ControllerError{500, 10002, "服务器错误", "数据库操作错误", ""}
 	errDupUser      = &ControllerError{400, 10003, "用户信息已存在", "数据库记录重复", ""}

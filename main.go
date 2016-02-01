@@ -1,6 +1,7 @@
 package main
 
 import (
+	"beego-demo/controllers"
 	_ "beego-demo/routers"
 	"fmt"
 	"github.com/astaxie/beego"
@@ -58,6 +59,8 @@ func main() {
 	if mode == "prod" {
 		beego.SetLevel(beego.LevelInformational)
 	}
+
+	beego.ErrorController(&controllers.ErrorController{})
 
 	beego.Run()
 }
