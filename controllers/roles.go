@@ -40,13 +40,12 @@ func (this *RoleController) Auth() {
 		return
 	}
 
-	// Create the token
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	// Set some claims
-	token.Claims["id"] = strconv.FormatInt(form.Id, 10)
-	token.Claims["name"] = form.Name
-	token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	// Create the token with some claims
+	claims := make(jwt.MapClaims)
+	claims["id"] = strconv.FormatInt(form.Id, 10)
+	claims["name"] = form.Name
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Sign and get the complete encoded token as a string
 	tokenString, err := token.SignedString([]byte("secret"))
@@ -66,7 +65,13 @@ func (this *RoleController) Post() {
 		this.RetError(e)
 		return
 	}
-	if token.Claims["id"] != "1" {
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		if claims["id"] != "1" {
+			this.RetError(errPermission)
+			return
+		}
+	} else {
 		this.RetError(errPermission)
 		return
 	}
@@ -198,9 +203,19 @@ func (this *RoleController) Put() {
 		this.RetError(e)
 		return
 	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		if claims["id"] != "1" {
+			this.RetError(errPermission)
+			return
+		}
+	} else {
+		this.RetError(errPermission)
+		return
+	}
 
 	idStr := this.Ctx.Input.Param(":id")
-	if token.Claims["id"] != idStr && token.Claims["id"] != "1" {
+	if claims["id"] != idStr && claims["id"] != "1" {
 		this.RetError(errPermission)
 		return
 	}
@@ -254,7 +269,13 @@ func (this *RoleController) Delete() {
 		this.RetError(e)
 		return
 	}
-	if token.Claims["id"] != "1" {
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		if claims["id"] != "1" {
+			this.RetError(errPermission)
+			return
+		}
+	} else {
 		this.RetError(errPermission)
 		return
 	}
