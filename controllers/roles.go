@@ -204,12 +204,7 @@ func (this *RoleController) Put() {
 		return
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok {
-		if claims["id"] != "1" {
-			this.RetError(errPermission)
-			return
-		}
-	} else {
+	if !ok {
 		this.RetError(errPermission)
 		return
 	}
