@@ -1,0 +1,21 @@
+package: beego-demo
+import:
+- package: github.com/astaxie/beego
+  subpackages:
+  - session/redis
+  - validation
+- package: github.com/dgrijalva/jwt-go
+- package: github.com/garyburd/redigo
+  subpackages:
+  - redis
+- package: github.com/go-sql-driver/mysql
+- package: golang.org/x/crypto
+  subpackages:
+  - scrypt
+- package: gopkg.in/mgo.v2
+  subpackages:
+  - bson
+testImport:
+- package: github.com/smartystreets/goconvey
+  subpackages:
+  - convey
