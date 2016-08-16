@@ -131,13 +131,28 @@ password =
 ```
 这里单独封装了一个 myredis 包来实现数据库的初始化，以简化后续的数据库操作。
 
-### Beego
+## 运行
 
-安装/升级所有依赖包：
+将代码放在 $GOPATH/src 目录下：
+
+```
+$ cd $GOPATH/src/
+$ git clone https://github.com/gwduan/beego-demo.git
+```
+
+从 go1.7 开始，使用 [glide](https://github.com/Masterminds/glide) 工具来管理依赖包，需要事先安装好 glide 。
+
+安装依赖包：
+
+```
+$ cd $GOPATH/src/beego-demo/
+$ glide install
+```
+
+如果不使用 glide ，也可手工安装依赖包，但可能会有包版本的兼容问题：
 
 ```
 $ go get -u github.com/astaxie/beego
-$ go get -u github.com/beego/bee
 $ go get -u github.com/astaxie/beego/session/redis
 $ go get -u gopkg.in/mgo.v2
 $ go get -u github.com/garyburd/redigo/redis
@@ -146,23 +161,29 @@ $ go get -u golang.org/x/crypto/scrypt
 $ go get -u github.com/dgrijalva/jwt-go
 ```
 
+安装 bee 工具，调试阶段很好用：
+
+```
+$ go get -u github.com/beego/bee
+```
+
+开始运行：
+
+```
+$ cd $GOPATH/src/beego-demo/
+$ bee run
+```
+
 当前版本：
 
 ```
 $ bee version
 bee   :1.4.1
 beego :1.6.1
-Go    :go version go1.6 darwin/amd64
+Go    :go version go1.7 darwin/amd64
 ```
 
-## 运行
-
-将代码放在 $GOPATH/src 目录下，运行（调试模式）：
-
-```
-$ cd $GOPATH/src/beego-demo/
-$ bee run
-```
+## 部署
 
 正式部署时，可通过系统的 Init 服务来启动。在 scripts 目录下有 upstart 和 systemd 两套简易示例脚本，可参考使用。
 
