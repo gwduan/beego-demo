@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"errors"
+	"regexp"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/dgrijalva/jwt-go"
-	"regexp"
-	"strings"
 )
 
 const (

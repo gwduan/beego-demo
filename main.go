@@ -1,16 +1,18 @@
 package main
 
 import (
-	"beego-demo/controllers"
-	_ "beego-demo/routers"
 	"fmt"
-	"github.com/astaxie/beego"
-	_ "github.com/astaxie/beego/session/redis"
 	"os"
 	"os/signal"
 	"os/user"
 	"strconv"
 	"syscall"
+
+	"beego-demo/controllers"
+	_ "beego-demo/routers"
+
+	"github.com/astaxie/beego"
+	_ "github.com/astaxie/beego/session/redis"
 )
 
 func setUserId() {

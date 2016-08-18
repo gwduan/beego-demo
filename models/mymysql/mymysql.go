@@ -2,6 +2,7 @@ package mymysql
 
 import (
 	"database/sql"
+
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 )

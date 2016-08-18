@@ -1,12 +1,14 @@
 package controllers
 
 import (
-	"beego-demo/models"
 	"encoding/json"
-	"github.com/astaxie/beego"
-	"github.com/dgrijalva/jwt-go"
 	"strconv"
 	"time"
+
+	"beego-demo/models"
+
+	"github.com/astaxie/beego"
+	"github.com/dgrijalva/jwt-go"
 )
 
 type RoleController struct {

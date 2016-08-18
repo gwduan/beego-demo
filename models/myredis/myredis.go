@@ -1,9 +1,10 @@
 package myredis
 
 import (
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/garyburd/redigo/redis"
-	"time"
 )
 
 var pool *redis.Pool

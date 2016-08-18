@@ -1,10 +1,12 @@
 package models
 
 import (
-	"beego-demo/models/myredis"
 	"fmt"
-	"github.com/astaxie/beego"
 	"time"
+
+	"beego-demo/models/myredis"
+
+	"github.com/astaxie/beego"
 )
 
 func IncTotalUserCount(t time.Time) error {

@@ -1,15 +1,17 @@
 package controllers
 
 import (
-	"beego-demo/models"
 	"crypto/md5"
 	"fmt"
-	"github.com/astaxie/beego"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"beego-demo/models"
+
+	"github.com/astaxie/beego"
 )
 
 type UserController struct {

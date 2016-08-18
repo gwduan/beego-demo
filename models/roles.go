@@ -1,12 +1,14 @@
 package models
 
 import (
-	"beego-demo/models/mymysql"
 	"database/sql"
 	"fmt"
+	"time"
+
+	"beego-demo/models/mymysql"
+
 	"github.com/astaxie/beego"
 	"github.com/go-sql-driver/mysql"
-	"time"
 )
 
 type Role struct {

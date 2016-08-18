@@ -1,14 +1,16 @@
 package models
 
 import (
-	"beego-demo/models/mymongo"
 	"crypto/rand"
 	"fmt"
+	"io"
+	"time"
+
+	"beego-demo/models/mymongo"
+
 	"golang.org/x/crypto/scrypt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"io"
-	"time"
 )
 
 type User struct {
