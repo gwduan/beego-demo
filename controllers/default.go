@@ -4,13 +4,15 @@ import (
 	"github.com/astaxie/beego"
 )
 
+// MainController definition.
 type MainController struct {
 	beego.Controller
 }
 
-func (this *MainController) Get() {
-	this.Data["Website"] = "beego.me"
-	this.Data["Email"] = "astaxie@gmail.com"
-	this.TplName = "index.tpl"
-	this.Render()
+// Get method.
+func (c *MainController) Get() {
+	c.Data["Website"] = "beego.me"
+	c.Data["Email"] = "astaxie@gmail.com"
+	c.TplName = "index.tpl"
+	c.Render()
 }

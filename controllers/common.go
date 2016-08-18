@@ -10,6 +10,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// Predefined const error strings.
 const (
 	ErrInputData    = "数据输入错误"
 	ErrDatabase     = "数据库操作错误"
@@ -24,6 +25,7 @@ const (
 	ErrSystem       = "操作系统错误"
 )
 
+// ControllerError is controller error info structer.
 type ControllerError struct {
 	Status   int    `json:"status"`
 	Code     int    `json:"code"`
@@ -32,6 +34,7 @@ type ControllerError struct {
 	MoreInfo string `json:"more_info"`
 }
 
+// Predefined controller error values.
 var (
 	err404          = &ControllerError{404, 404, "page not found", "page not found", ""}
 	errInputData    = &ControllerError{400, 10001, "数据输入错误", "客户端参数错误", ""}
@@ -49,21 +52,23 @@ var (
 	errPermission   = &ControllerError{400, 10013, "没有权限", "没有操作权限", ""}
 )
 
+// BaseController definiton.
 type BaseController struct {
 	beego.Controller
 }
 
-func (this *BaseController) RetError(e *ControllerError) {
+// RetError return error information in JSON.
+func (base *BaseController) RetError(e *ControllerError) {
 	if mode := beego.AppConfig.String("runmode"); mode == "prod" {
 		e.DevInfo = ""
 	}
 
-	this.Ctx.Output.Header("Content-Type", "application/json; charset=utf-8")
-	this.Ctx.ResponseWriter.WriteHeader(e.Status)
-	this.Data["json"] = e
-	this.ServeJSON()
+	base.Ctx.Output.Header("Content-Type", "application/json; charset=utf-8")
+	base.Ctx.ResponseWriter.WriteHeader(e.Status)
+	base.Data["json"] = e
+	base.ServeJSON()
 
-	this.StopRun()
+	base.StopRun()
 }
 
 var sqlOp = map[string]string{
@@ -75,12 +80,15 @@ var sqlOp = map[string]string{
 	"le": "<=",
 }
 
-func (this *BaseController) ParseQueryParm() (v map[string]string, o map[string]string, err error) {
+// ParseQueryParm parse query parameters.
+//   query=col1:op1:val1,col2:op2:val2,...
+//   op: one of eq, ne, gt, ge, lt, le
+func (base *BaseController) ParseQueryParm() (v map[string]string, o map[string]string, err error) {
 	var nameRule = regexp.MustCompile("^[a-zA-Z0-9_]+$")
-	var queryVal map[string]string = make(map[string]string)
-	var queryOp map[string]string = make(map[string]string)
+	queryVal := make(map[string]string)
+	queryOp := make(map[string]string)
 
-	query := this.GetString("query")
+	query := base.GetString("query")
 	if query == "" {
 		return queryVal, queryOp, nil
 	}
@@ -88,23 +96,20 @@ func (this *BaseController) ParseQueryParm() (v map[string]string, o map[string]
 	for _, cond := range strings.Split(query, ",") {
 		kov := strings.Split(cond, ":")
 		if len(kov) != 3 {
-			return queryVal, queryOp,
-				errors.New("Query format != k:o:v")
+			return queryVal, queryOp, errors.New("Query format != k:o:v")
 		}
 
 		var key string
 		var value string
 		var operator string
 		if !nameRule.MatchString(kov[0]) {
-			return queryVal, queryOp,
-				errors.New("Query key format is wrong")
+			return queryVal, queryOp, errors.New("Query key format is wrong")
 		}
 		key = kov[0]
 		if op, ok := sqlOp[kov[1]]; ok {
 			operator = op
 		} else {
-			return queryVal, queryOp,
-				errors.New("Query operator is wrong")
+			return queryVal, queryOp, errors.New("Query operator is wrong")
 		}
 		value = strings.Replace(kov[2], "'", "\\'", -1)
 
@@ -115,11 +120,13 @@ func (this *BaseController) ParseQueryParm() (v map[string]string, o map[string]
 	return queryVal, queryOp, nil
 }
 
-func (this *BaseController) ParseOrderParm() (o map[string]string, err error) {
+// ParseOrderParm parse order parameters.
+//   order=col1:asc|desc,col2:asc|esc,...
+func (base *BaseController) ParseOrderParm() (o map[string]string, err error) {
 	var nameRule = regexp.MustCompile("^[a-zA-Z0-9_]+$")
-	var order map[string]string = make(map[string]string)
+	order := make(map[string]string)
 
-	v := this.GetString("order")
+	v := base.GetString("order")
 	if v == "" {
 		return order, nil
 	}
@@ -142,8 +149,10 @@ func (this *BaseController) ParseOrderParm() (o map[string]string, err error) {
 	return order, nil
 }
 
-func (this *BaseController) ParseLimitParm() (l int64, err error) {
-	if v, err := this.GetInt64("limit"); err != nil {
+// ParseLimitParm parse limit parameter.
+//   limit=n
+func (base *BaseController) ParseLimitParm() (l int64, err error) {
+	if v, err := base.GetInt64("limit"); err != nil {
 		return 10, err
 	} else if v > 0 {
 		return v, nil
@@ -152,8 +161,10 @@ func (this *BaseController) ParseLimitParm() (l int64, err error) {
 	}
 }
 
-func (this *BaseController) ParseOffsetParm() (o int64, err error) {
-	if v, err := this.GetInt64("offset"); err != nil {
+// ParseOffsetParm parse offset parameter.
+//   offset=n
+func (base *BaseController) ParseOffsetParm() (o int64, err error) {
+	if v, err := base.GetInt64("offset"); err != nil {
 		return 0, err
 	} else if v > 0 {
 		return v, nil
@@ -162,7 +173,8 @@ func (this *BaseController) ParseOffsetParm() (o int64, err error) {
 	}
 }
 
-func (this *BaseController) VerifyForm(obj interface{}) (err error) {
+// VerifyForm use validation to verify input parameters.
+func (base *BaseController) VerifyForm(obj interface{}) (err error) {
 	valid := validation.Validation{}
 	ok, err := valid.Valid(obj)
 	if err != nil {
@@ -179,8 +191,9 @@ func (this *BaseController) VerifyForm(obj interface{}) (err error) {
 	return nil
 }
 
-func (this *BaseController) ParseToken() (t *jwt.Token, e *ControllerError) {
-	authString := this.Ctx.Input.Header("Authorization")
+// ParseToken parse JWT token in http header.
+func (base *BaseController) ParseToken() (t *jwt.Token, e *ControllerError) {
+	authString := base.Ctx.Input.Header("Authorization")
 	beego.Debug("AuthString:", authString)
 
 	kv := strings.Split(authString, " ")

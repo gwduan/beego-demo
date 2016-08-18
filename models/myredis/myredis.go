@@ -9,6 +9,7 @@ import (
 
 var pool *redis.Pool
 
+// Conn return redis connection.
 func Conn() redis.Conn {
 	return pool.Get()
 }

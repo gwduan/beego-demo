@@ -14,24 +14,26 @@ import (
 	"github.com/astaxie/beego"
 )
 
+// UserController definiton.
 type UserController struct {
 	BaseController
 }
 
-func (this *UserController) Register() {
+// Register method.
+func (c *UserController) Register() {
 	form := models.RegisterForm{}
-	if err := this.ParseForm(&form); err != nil {
+	if err := c.ParseForm(&form); err != nil {
 		beego.Debug("ParseRegsiterForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("ParseRegsiterForm:", &form)
 
-	if err := this.VerifyForm(&form); err != nil {
+	if err := c.VerifyForm(&form); err != nil {
 		beego.Debug("ValidRegsiterForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 
@@ -39,8 +41,8 @@ func (this *UserController) Register() {
 	user, err := models.NewUser(&form, regDate)
 	if err != nil {
 		beego.Error("NewUser:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrSystem)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrSystem)
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("NewUser:", user)
@@ -48,117 +50,120 @@ func (this *UserController) Register() {
 	if code, err := user.Insert(); err != nil {
 		beego.Error("InsertUser:", err)
 		if code == models.ErrDupRows {
-			this.Data["json"] = models.NewErrorInfo(ErrDupUser)
+			c.Data["json"] = models.NewErrorInfo(ErrDupUser)
 		} else {
-			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+			c.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		}
-		this.ServeJSON()
+		c.ServeJSON()
 		return
 	}
 
 	go models.IncTotalUserCount(regDate)
 
-	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJSON()
+	c.Data["json"] = models.NewNormalInfo("Succes")
+	c.ServeJSON()
 }
 
-func (this *UserController) Login() {
+// Login method.
+func (c *UserController) Login() {
 	form := models.LoginForm{}
-	if err := this.ParseForm(&form); err != nil {
+	if err := c.ParseForm(&form); err != nil {
 		beego.Debug("ParseLoginForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("ParseLoginForm:", &form)
 
-	if err := this.VerifyForm(&form); err != nil {
+	if err := c.VerifyForm(&form); err != nil {
 		beego.Debug("ValidLoginForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 
 	user := models.User{}
-	if code, err := user.FindById(form.Phone); err != nil {
+	if code, err := user.FindByID(form.Phone); err != nil {
 		beego.Error("FindUserById:", err)
 		if code == models.ErrNotFound {
-			this.Data["json"] = models.NewErrorInfo(ErrNoUser)
+			c.Data["json"] = models.NewErrorInfo(ErrNoUser)
 		} else {
-			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+			c.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		}
-		this.ServeJSON()
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("UserInfo:", &user)
 
 	if ok, err := user.CheckPass(form.Password); err != nil {
 		beego.Error("CheckUserPass:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrSystem)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrSystem)
+		c.ServeJSON()
 		return
 	} else if !ok {
-		this.Data["json"] = models.NewErrorInfo(ErrPass)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrPass)
+		c.ServeJSON()
 		return
 	}
 	user.ClearPass()
 
-	this.SetSession("user_id", form.Phone)
+	c.SetSession("user_id", form.Phone)
 
-	this.Data["json"] = &models.LoginInfo{Code: 0, UserInfo: &user}
-	this.ServeJSON()
+	c.Data["json"] = &models.LoginInfo{Code: 0, UserInfo: &user}
+	c.ServeJSON()
 }
 
-func (this *UserController) Logout() {
+// Logout method.
+func (c *UserController) Logout() {
 	form := models.LogoutForm{}
-	if err := this.ParseForm(&form); err != nil {
+	if err := c.ParseForm(&form); err != nil {
 		beego.Debug("ParseLogoutForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("ParseLogoutForm:", &form)
 
-	if err := this.VerifyForm(&form); err != nil {
+	if err := c.VerifyForm(&form); err != nil {
 		beego.Debug("ValidLogoutForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 
-	if this.GetSession("user_id") != form.Phone {
-		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJSON()
+	if c.GetSession("user_id") != form.Phone {
+		c.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		c.ServeJSON()
 		return
 	}
 
-	this.DelSession("user_id")
+	c.DelSession("user_id")
 
-	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJSON()
+	c.Data["json"] = models.NewNormalInfo("Succes")
+	c.ServeJSON()
 }
 
-func (this *UserController) Passwd() {
+// Passwd method.
+func (c *UserController) Passwd() {
 	form := models.PasswdForm{}
-	if err := this.ParseForm(&form); err != nil {
+	if err := c.ParseForm(&form); err != nil {
 		beego.Debug("ParsePasswdForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("ParsePasswdForm:", &form)
 
-	if err := this.VerifyForm(&form); err != nil {
+	if err := c.VerifyForm(&form); err != nil {
 		beego.Debug("ValidPasswdForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 
-	if this.GetSession("user_id") != form.Phone {
-		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJSON()
+	if c.GetSession("user_id") != form.Phone {
+		c.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		c.ServeJSON()
 		return
 	}
 
@@ -166,57 +171,58 @@ func (this *UserController) Passwd() {
 	if err != nil {
 		beego.Error("ChangeUserPass:", err)
 		if code == models.ErrNotFound {
-			this.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
+			c.Data["json"] = models.NewErrorInfo(ErrNoUserPass)
 		} else if code == models.ErrDatabase {
-			this.Data["json"] = models.NewErrorInfo(ErrDatabase)
+			c.Data["json"] = models.NewErrorInfo(ErrDatabase)
 		} else {
-			this.Data["json"] = models.NewErrorInfo(ErrSystem)
+			c.Data["json"] = models.NewErrorInfo(ErrSystem)
 		}
-		this.ServeJSON()
+		c.ServeJSON()
 		return
 	}
 
-	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJSON()
+	c.Data["json"] = models.NewNormalInfo("Succes")
+	c.ServeJSON()
 }
 
-func (this *UserController) Uploads() {
+// Uploads method.
+func (c *UserController) Uploads() {
 	form := models.UploadsForm{}
-	if err := this.ParseForm(&form); err != nil {
+	if err := c.ParseForm(&form); err != nil {
 		beego.Debug("ParseUploadsForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 	beego.Debug("ParseUploadsForm:", &form)
 
-	if err := this.VerifyForm(&form); err != nil {
+	if err := c.VerifyForm(&form); err != nil {
 		beego.Debug("ValidUploadsForm:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
 
-	if this.GetSession("user_id") != form.Phone {
-		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJSON()
+	if c.GetSession("user_id") != form.Phone {
+		c.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		c.ServeJSON()
 		return
 	}
 
-	//files := this.Ctx.Request.MultipartForm.File["photos"]
-	files, err := this.GetFiles("photos")
+	//files := c.Ctx.Request.MultipartForm.File["photos"]
+	files, err := c.GetFiles("photos")
 	if err != nil {
 		beego.Debug("GetFiles:", err)
-		this.Data["json"] = models.NewErrorInfo(ErrInputData)
-		this.ServeJSON()
+		c.Data["json"] = models.NewErrorInfo(ErrInputData)
+		c.ServeJSON()
 		return
 	}
-	for i, _ := range files {
+	for i := range files {
 		src, err := files[i].Open()
 		if err != nil {
 			beego.Error("Open MultipartForm File:", err)
-			this.Data["json"] = models.NewErrorInfo(ErrOpenFile)
-			this.ServeJSON()
+			c.Data["json"] = models.NewErrorInfo(ErrOpenFile)
+			c.ServeJSON()
 			return
 		}
 		defer src.Close()
@@ -224,41 +230,41 @@ func (this *UserController) Uploads() {
 		hash := md5.New()
 		if _, err := io.Copy(hash, src); err != nil {
 			beego.Error("Copy File to Hash:", err)
-			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
-			this.ServeJSON()
+			c.Data["json"] = models.NewErrorInfo(ErrWriteFile)
+			c.ServeJSON()
 			return
 		}
 		hex := fmt.Sprintf("%x", hash.Sum(nil))
 
-		dst, err := os.Create(beego.AppConfig.String("apppath") +
-			"static/" + hex + filepath.Ext(files[i].Filename))
+		dst, err := os.Create(beego.AppConfig.String("apppath") + "static/" + hex + filepath.Ext(files[i].Filename))
 		if err != nil {
 			beego.Error("Create File:", err)
-			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
-			this.ServeJSON()
+			c.Data["json"] = models.NewErrorInfo(ErrWriteFile)
+			c.ServeJSON()
 		}
 		defer dst.Close()
 
 		src.Seek(0, 0)
 		if _, err := io.Copy(dst, src); err != nil {
 			beego.Error("Copy File:", err)
-			this.Data["json"] = models.NewErrorInfo(ErrWriteFile)
-			this.ServeJSON()
+			c.Data["json"] = models.NewErrorInfo(ErrWriteFile)
+			c.ServeJSON()
 			return
 		}
 	}
 
-	this.Data["json"] = models.NewNormalInfo("Succes")
-	this.ServeJSON()
+	c.Data["json"] = models.NewNormalInfo("Succes")
+	c.ServeJSON()
 }
 
-func (this *UserController) Downloads() {
-	if this.GetSession("user_id") == nil {
-		this.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
-		this.ServeJSON()
+// Downloads method.
+func (c *UserController) Downloads() {
+	if c.GetSession("user_id") == nil {
+		c.Data["json"] = models.NewErrorInfo(ErrInvalidUser)
+		c.ServeJSON()
 		return
 	}
 
 	file := beego.AppConfig.String("apppath") + "logs/test.log"
-	http.ServeFile(this.Ctx.ResponseWriter, this.Ctx.Request, file)
+	http.ServeFile(c.Ctx.ResponseWriter, c.Ctx.Request, file)
 }

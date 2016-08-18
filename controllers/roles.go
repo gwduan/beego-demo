@@ -11,40 +11,42 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// RoleController definiton.
 type RoleController struct {
 	BaseController
 }
 
-func (this *RoleController) Auth() {
+// Auth method.
+func (c *RoleController) Auth() {
 	form := models.RoleAuthForm{}
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRoleAuth:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 	beego.Debug("ParseRoleAuth:", &form)
 
 	role := models.Role{}
-	if code, err := role.FindById(form.Id); err != nil {
+	if code, err := role.FindByID(form.ID); err != nil {
 		beego.Error("FindRoleById:", err)
 		if code == models.ErrNotFound {
-			this.RetError(errNoUser)
+			c.RetError(errNoUser)
 		} else {
-			this.RetError(errDatabase)
+			c.RetError(errDatabase)
 		}
 		return
 	}
 	beego.Debug("RoleInfo:", &role)
 
 	if role.Name != form.Name || role.Password != form.Password {
-		this.RetError(errPass)
+		c.RetError(errPass)
 		return
 	}
 
 	// Create the token with some claims
 	claims := make(jwt.MapClaims)
-	claims["id"] = strconv.FormatInt(form.Id, 10)
+	claims["id"] = strconv.FormatInt(form.ID, 10)
 	claims["name"] = form.Name
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -53,36 +55,37 @@ func (this *RoleController) Auth() {
 	tokenString, err := token.SignedString([]byte("secret"))
 	if err != nil {
 		beego.Error("jwt.SignedString:", err)
-		this.RetError(errSystem)
+		c.RetError(errSystem)
 		return
 	}
 
-	this.Data["json"] = &models.RoleAuthInfo{Token: tokenString}
-	this.ServeJSON()
+	c.Data["json"] = &models.RoleAuthInfo{Token: tokenString}
+	c.ServeJSON()
 }
 
-func (this *RoleController) Post() {
-	token, e := this.ParseToken()
+// Post method.
+func (c *RoleController) Post() {
+	token, e := c.ParseToken()
 	if e != nil {
-		this.RetError(e)
+		c.RetError(e)
 		return
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok {
 		if claims["id"] != "1" {
-			this.RetError(errPermission)
+			c.RetError(errPermission)
 			return
 		}
 	} else {
-		this.RetError(errPermission)
+		c.RetError(errPermission)
 		return
 	}
 
 	form := models.RolePostForm{}
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &form)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRolePost:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 	beego.Debug("ParseRolePost:", &form)
@@ -94,40 +97,41 @@ func (this *RoleController) Post() {
 	if code, err := role.Insert(); err != nil {
 		beego.Error("InsertRole:", err)
 		if code == models.ErrDupRows {
-			this.RetError(errDupUser)
+			c.RetError(errDupUser)
 		} else {
-			this.RetError(errDatabase)
+			c.RetError(errDatabase)
 		}
 		return
 	}
 
 	role.ClearPass()
 
-	this.Data["json"] = &models.RolePostInfo{RoleInfo: role}
-	this.ServeJSON()
+	c.Data["json"] = &models.RolePostInfo{RoleInfo: role}
+	c.ServeJSON()
 }
 
-func (this *RoleController) GetOne() {
-	if _, e := this.ParseToken(); e != nil {
-		this.RetError(e)
+// GetOne method.
+func (c *RoleController) GetOne() {
+	if _, e := c.ParseToken(); e != nil {
+		c.RetError(e)
 		return
 	}
 
-	idStr := this.Ctx.Input.Param(":id")
+	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 
 	role := models.Role{}
-	if code, err := role.FindById(id); err != nil {
+	if code, err := role.FindByID(id); err != nil {
 		beego.Error("FindRoleById:", err)
 		if code == models.ErrNotFound {
-			this.RetError(errNoUser)
+			c.RetError(errNoUser)
 		} else {
-			this.RetError(errDatabase)
+			c.RetError(errDatabase)
 		}
 		return
 	}
@@ -135,120 +139,121 @@ func (this *RoleController) GetOne() {
 
 	role.ClearPass()
 
-	this.Data["json"] = &models.RoleGetOneInfo{RoleInfo: &role}
-	this.ServeJSON()
+	c.Data["json"] = &models.RoleGetOneInfo{RoleInfo: &role}
+	c.ServeJSON()
 }
 
-func (this *RoleController) GetAll() {
-	if _, e := this.ParseToken(); e != nil {
-		this.RetError(e)
+// GetAll method.
+func (c *RoleController) GetAll() {
+	if _, e := c.ParseToken(); e != nil {
+		c.RetError(e)
 		return
 	}
 
-	queryVal, queryOp, err := this.ParseQueryParm()
+	queryVal, queryOp, err := c.ParseQueryParm()
 	if err != nil {
 		beego.Debug("ParseQuery:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 	beego.Debug("QueryVal:", queryVal)
 	beego.Debug("QueryOp:", queryOp)
 
-	order, err := this.ParseOrderParm()
+	order, err := c.ParseOrderParm()
 	if err != nil {
 		beego.Debug("ParseOrder:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 	beego.Debug("Order:", order)
 
-	limit, err := this.ParseLimitParm()
+	limit, err := c.ParseLimitParm()
 	/*
 		if err != nil {
 			beego.Debug("ParseLimit:", err)
-			this.RetError(errInputData)
+			c.RetError(errInputData)
 			return
 		}
 	*/
 	beego.Debug("Limit:", limit)
 
-	offset, err := this.ParseOffsetParm()
+	offset, err := c.ParseOffsetParm()
 	/*
 		if err != nil {
 			beego.Debug("ParseOffset:", err)
-			this.RetError(errInputData)
+			c.RetError(errInputData)
 			return
 		}
 	*/
 	beego.Debug("Offset:", offset)
 
-	roles, err := models.GetAllRoles(queryVal, queryOp, order,
-		limit, offset)
+	roles, err := models.GetAllRoles(queryVal, queryOp, order, limit, offset)
 	if err != nil {
 		beego.Error("GetAllRole:", err)
-		this.RetError(errDatabase)
+		c.RetError(errDatabase)
 		return
 	}
 	beego.Debug("GetAllRole:", &roles)
 
-	for i, _ := range roles {
+	for i := range roles {
 		roles[i].ClearPass()
 	}
 
-	this.Data["json"] = &models.RoleGetAllInfo{RolesInfo: roles}
-	this.ServeJSON()
+	c.Data["json"] = &models.RoleGetAllInfo{RolesInfo: roles}
+	c.ServeJSON()
 }
 
-func (this *RoleController) Put() {
-	token, e := this.ParseToken()
+// Put method.
+func (c *RoleController) Put() {
+	token, e := c.ParseToken()
 	if e != nil {
-		this.RetError(e)
+		c.RetError(e)
 		return
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		this.RetError(errPermission)
+		c.RetError(errPermission)
 		return
 	}
 
-	idStr := this.Ctx.Input.Param(":id")
+	idStr := c.Ctx.Input.Param(":id")
 	if claims["id"] != idStr && claims["id"] != "1" {
-		this.RetError(errPermission)
+		c.RetError(errPermission)
 		return
 	}
 
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 
 	form := models.RolePutForm{}
-	err = json.Unmarshal(this.Ctx.Input.RequestBody, &form)
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		beego.Debug("ParseRolePut:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 	beego.Debug("ParseRolePut:", &form)
 
 	role := models.Role{}
-	if code, err := role.UpdateById(id, &form); err != nil {
+	if code, err := role.UpdateByID(id, &form); err != nil {
 		beego.Error("UpdateRoleById:", err)
-		this.RetError(errDatabase)
+		c.RetError(errDatabase)
 		return
 	} else if code == models.ErrNotFound {
-		this.RetError(errNoUserChange)
+		c.RetError(errNoUserChange)
 		return
 	}
 
-	if code, err := role.FindById(id); err != nil {
+	if code, err := role.FindByID(id); err != nil {
 		beego.Error("FindRoleById:", err)
 		if code == models.ErrNotFound {
-			this.RetError(errNoUser)
+			c.RetError(errNoUser)
 		} else {
-			this.RetError(errDatabase)
+			c.RetError(errDatabase)
 		}
 		return
 	}
@@ -256,42 +261,43 @@ func (this *RoleController) Put() {
 
 	role.ClearPass()
 
-	this.Data["json"] = &models.RolePutInfo{RoleInfo: &role}
-	this.ServeJSON()
+	c.Data["json"] = &models.RolePutInfo{RoleInfo: &role}
+	c.ServeJSON()
 }
 
-func (this *RoleController) Delete() {
-	token, e := this.ParseToken()
+// Delete method.
+func (c *RoleController) Delete() {
+	token, e := c.ParseToken()
 	if e != nil {
-		this.RetError(e)
+		c.RetError(e)
 		return
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok {
 		if claims["id"] != "1" {
-			this.RetError(errPermission)
+			c.RetError(errPermission)
 			return
 		}
 	} else {
-		this.RetError(errPermission)
+		c.RetError(errPermission)
 		return
 	}
 
-	idStr := this.Ctx.Input.Param(":id")
+	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
 		beego.Debug("ParseRoleId:", err)
-		this.RetError(errInputData)
+		c.RetError(errInputData)
 		return
 	}
 
 	role := models.Role{}
-	if code, err := role.DeleteById(id); err != nil {
+	if code, err := role.DeleteByID(id); err != nil {
 		beego.Error("DeleteRoleById:", err)
-		this.RetError(errDatabase)
+		c.RetError(errDatabase)
 		return
 	} else if code == models.ErrNotFound {
-		this.RetError(errNoUser)
+		c.RetError(errNoUser)
 		return
 	}
 }

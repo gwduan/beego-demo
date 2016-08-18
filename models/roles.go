@@ -11,16 +11,18 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
+// Role model definiton.
 type Role struct {
-	Id       int64     `json:"id,omitempty"`
+	ID       int64     `json:"id,omitempty"`
 	Name     string    `json:"name,omitempty"`
 	Password string    `json:"password,omitempty"`
 	RegDate  time.Time `json:"reg_date,omitempty"`
 }
 
+// NewRole alloc and initialize a role.
 func NewRole(f *RolePostForm, t time.Time) *Role {
 	role := Role{
-		Id:       f.Id,
+		ID:       f.ID,
 		Name:     f.Name,
 		Password: f.Password,
 		RegDate:  t}
@@ -28,6 +30,7 @@ func NewRole(f *RolePostForm, t time.Time) *Role {
 	return &role
 }
 
+// Insert insert a role recode to database.
 func (r *Role) Insert() (code int, err error) {
 	db := mymysql.Conn()
 
@@ -38,25 +41,26 @@ func (r *Role) Insert() (code int, err error) {
 	defer st.Close()
 
 	//if result, err := st.Exec(
-	if _, err := st.Exec(r.Id, r.Name, r.Password, r.RegDate); err != nil {
+	if _, err := st.Exec(r.ID, r.Name, r.Password, r.RegDate); err != nil {
 		if e, ok := err.(*mysql.MySQLError); ok {
 			//Duplicate key
 			if e.Number == 1062 {
 				return ErrDupRows, err
-			} else {
-				return ErrDatabase, err
 			}
-		} else {
+
 			return ErrDatabase, err
 		}
-	} else {
-		//r.Id, _ = result.LastInsertId()
+
+		return ErrDatabase, err
 	}
+
+	//r.ID, _ = result.LastInsertId()
 
 	return 0, nil
 }
 
-func (r *Role) FindById(id int64) (code int, err error) {
+// FindByID query a recode according to input id.
+func (r *Role) FindByID(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
 	st, err := db.Prepare("SELECT id, name, password, reg_date FROM roles WHERE id = ?")
@@ -67,21 +71,21 @@ func (r *Role) FindById(id int64) (code int, err error) {
 
 	row := st.QueryRow(id)
 
-	var tmpId sql.NullInt64
+	var tmpID sql.NullInt64
 	var tmpName sql.NullString
 	var tmpPassword sql.NullString
 	var tmpRegDate mysql.NullTime
-	if err := row.Scan(&tmpId, &tmpName, &tmpPassword,
-		&tmpRegDate); err != nil {
+	if err := row.Scan(&tmpID, &tmpName, &tmpPassword, &tmpRegDate); err != nil {
+		// Not found.
 		if err == sql.ErrNoRows {
 			return ErrNotFound, err
-		} else {
-			return ErrDatabase, err
 		}
+
+		return ErrDatabase, err
 	}
 
-	if tmpId.Valid {
-		r.Id = tmpId.Int64
+	if tmpID.Valid {
+		r.ID = tmpID.Int64
 	}
 	if tmpName.Valid {
 		r.Name = tmpName.String
@@ -96,13 +100,13 @@ func (r *Role) FindById(id int64) (code int, err error) {
 	return 0, nil
 }
 
+// ClearPass clear password information.
 func (r *Role) ClearPass() {
 	r.Password = ""
 }
 
-func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
-	order map[string]string, limit int64,
-	offset int64) (records []Role, err error) {
+// GetAllRoles query all matched records.
+func GetAllRoles(queryVal map[string]string, queryOp map[string]string, order map[string]string, limit int64, offset int64) (records []Role, err error) {
 	sqlStr := "SELECT id, name, password, reg_date FROM roles"
 	if len(queryVal) > 0 {
 		sqlStr += " WHERE "
@@ -159,18 +163,17 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 
 	records = make([]Role, 0, limit)
 	for rows.Next() {
-		var tmpId sql.NullInt64
+		var tmpID sql.NullInt64
 		var tmpName sql.NullString
 		var tmpPassword sql.NullString
 		var tmpRegDate mysql.NullTime
-		if err := rows.Scan(&tmpId, &tmpName, &tmpPassword,
-			&tmpRegDate); err != nil {
+		if err := rows.Scan(&tmpID, &tmpName, &tmpPassword, &tmpRegDate); err != nil {
 			return nil, err
 		}
 
 		r := Role{}
-		if tmpId.Valid {
-			r.Id = tmpId.Int64
+		if tmpID.Valid {
+			r.ID = tmpID.Int64
 		}
 		if tmpName.Valid {
 			r.Name = tmpName.String
@@ -190,7 +193,8 @@ func GetAllRoles(queryVal map[string]string, queryOp map[string]string,
 	return records, nil
 }
 
-func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
+// UpdateByID update a recode accroding to input id.
+func (r *Role) UpdateByID(id int64, f *RolePutForm) (code int, err error) {
 	db := mymysql.Conn()
 
 	st, err := db.Prepare("UPDATE roles SET name = ?, password = ? WHERE id = ?")
@@ -207,12 +211,13 @@ func (r *Role) UpdateById(id int64, f *RolePutForm) (code int, err error) {
 	num, _ := result.RowsAffected()
 	if num > 0 {
 		return 0, nil
-	} else {
-		return ErrNotFound, nil
 	}
+
+	return ErrNotFound, nil
 }
 
-func (r *Role) DeleteById(id int64) (code int, err error) {
+// DeleteByID delete a record accroding to input id.
+func (r *Role) DeleteByID(id int64) (code int, err error) {
 	db := mymysql.Conn()
 
 	st, err := db.Prepare("DELETE FROM roles WHERE id = ?")
@@ -229,7 +234,7 @@ func (r *Role) DeleteById(id int64) (code int, err error) {
 	num, _ := result.RowsAffected()
 	if num > 0 {
 		return 0, nil
-	} else {
-		return ErrNotFound, nil
 	}
+
+	return ErrNotFound, nil
 }

@@ -1,14 +1,17 @@
 package controllers
 
+// ErrorController definiton.
 type ErrorController struct {
 	BaseController
 }
 
-func (this *ErrorController) RetError(e *ControllerError) {
-	this.Data["json"] = e
-	this.ServeJSON()
+// RetError return error informatino in JSON.
+func (c *ErrorController) RetError(e *ControllerError) {
+	c.Data["json"] = e
+	c.ServeJSON()
 }
 
-func (this *ErrorController) Error404() {
-	this.RetError(err404)
+// Error404 redefine 404 error information.
+func (c *ErrorController) Error404() {
+	c.RetError(err404)
 }

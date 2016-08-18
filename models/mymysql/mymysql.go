@@ -4,11 +4,12 @@ import (
 	"database/sql"
 
 	"github.com/astaxie/beego"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // import mysql driver.
 )
 
 var session *sql.DB
 
+// Conn return mysql connection.
 func Conn() *sql.DB {
 	return session
 }

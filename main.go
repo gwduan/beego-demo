@@ -15,7 +15,7 @@ import (
 	_ "github.com/astaxie/beego/session/redis"
 )
 
-func setUserId() {
+func setUserID() {
 	userName := beego.AppConfig.String("user")
 	u, err := user.Lookup(userName)
 	if err != nil {
@@ -46,13 +46,12 @@ func handleSignals(c chan os.Signal) {
 }
 
 func main() {
-	//setUserId()
+	//setUserID()
 
 	graceful, _ := beego.AppConfig.Bool("graceful")
 	if !graceful {
 		sigs := make(chan os.Signal, 1)
-		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM,
-			syscall.SIGQUIT)
+		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 		go handleSignals(sigs)
 	}
 

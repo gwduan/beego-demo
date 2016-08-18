@@ -7,6 +7,7 @@ import (
 
 var session *mgo.Session
 
+// Conn return mongodb session.
 func Conn() *mgo.Session {
 	return session.Copy()
 }
