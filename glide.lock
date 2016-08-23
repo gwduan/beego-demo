@@ -1,8 +1,8 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2016-08-16T16:24:44.130758107+08:00
+updated: 2016-08-23T15:20:35.119730278+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: 88c5dfa6ead42e624c2e7d9e04eab6cb2d07412a
+  version: efbde1ee77517486eac03e814e01d724ddad18e6
   subpackages:
   - config
   - context
@@ -23,12 +23,12 @@ imports:
 - name: github.com/go-sql-driver/mysql
   version: 0b58b37b664c21f3010e836f1b931e1d0b0b0685
 - name: golang.org/x/crypto
-  version: 6575f7ea326e67d12b77872ff66f5ea15f8aefad
+  version: b35ccbc95a0eaae49fb65c5d627cb7149ed8d1ab
   subpackages:
   - pbkdf2
   - scrypt
 - name: gopkg.in/mgo.v2
-  version: 01084657862d7b12d3b10ffd0394357abf8f8bc2
+  version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
   subpackages:
   - bson
   - internal/json
@@ -36,7 +36,7 @@ imports:
   - internal/scram
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: 72e303cb5f235b23471872477b57e573dc1c71d0
+  version: 45518c130e5bd1525f20110830a4986365a153de
   subpackages:
   - js
 - name: github.com/jtolds/gls
