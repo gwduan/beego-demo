@@ -178,9 +178,17 @@ $ bee run
 
 ```
 $ bee version
-bee   :1.4.1
-beego :1.6.1
-Go    :go version go1.7 darwin/amd64
+______
+| ___ \
+| |_/ /  ___   ___
+| ___ \ / _ \ / _ \
+| |_/ /|  __/|  __/
+\____/  \___| \___| v1.5.1
+
+├── Beego     : 1.7.0
+├── GoVersion : go1.7
+├── GOOS      : darwin
+├── GOARCH    : amd64
 ```
 
 ## 部署
