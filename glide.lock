@@ -1,8 +1,8 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2016-08-23T15:20:35.119730278+08:00
+updated: 2016-08-30T15:28:23.074324934+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: efbde1ee77517486eac03e814e01d724ddad18e6
+  version: 3f67c62dd87d651ef95883586bca141abf795507
   subpackages:
   - config
   - context
@@ -23,7 +23,7 @@ imports:
 - name: github.com/go-sql-driver/mysql
   version: 0b58b37b664c21f3010e836f1b931e1d0b0b0685
 - name: golang.org/x/crypto
-  version: b35ccbc95a0eaae49fb65c5d627cb7149ed8d1ab
+  version: 351dc6a5bf92a5f2ae22fadeee08eb6a45aa2d93
   subpackages:
   - pbkdf2
   - scrypt
@@ -47,7 +47,7 @@ testImports:
   - internal/go-render/render
   - internal/oglematchers
 - name: github.com/smartystreets/goconvey
-  version: 4622128e06c77c0174e17a7f0ed2db19a989b473
+  version: 5db88ed452e937f2fd557de6f4f1af7f2eabed0b
   subpackages:
   - convey
   - convey/gotest
