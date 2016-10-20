@@ -1,5 +1,5 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2016-10-13T15:50:12.803423434+08:00
+updated: 2016-10-20T09:21:46.935178734+08:00
 imports:
 - name: github.com/astaxie/beego
   version: 2d87d4feafeea0a133d217a82e6e02df0348fed5
@@ -23,7 +23,7 @@ imports:
 - name: github.com/go-sql-driver/mysql
   version: 0b58b37b664c21f3010e836f1b931e1d0b0b0685
 - name: golang.org/x/crypto
-  version: 5f31782cfb2b6373211f8f9fbf31283fa234b570
+  version: c367d6eeb7c6158125f2f47e049f7eb7e251c09a
   subpackages:
   - pbkdf2
   - scrypt
@@ -36,7 +36,7 @@ imports:
   - internal/scram
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: 00f306e07eaaaab04ea5dba605cd0e1eff9c6fb7
+  version: c79d0a5dbbdaf21092548246e69886a08f5a8e31
   subpackages:
   - js
 - name: github.com/jtolds/gls
