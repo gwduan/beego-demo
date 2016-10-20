@@ -1,2 +1,3 @@
 beego-demo
 *.swp
+vendor/
