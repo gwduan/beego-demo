@@ -186,7 +186,7 @@ ______
 \____/  \___| \___| v1.5.2
 
 ├── Beego     : 1.7.1
-├── GoVersion : go1.7.3
+├── GoVersion : go1.7.4
 ├── GOOS      : darwin
 ├── GOARCH    : amd64
 ```
