@@ -1,8 +1,8 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2017-03-07T09:18:04.952741766+08:00
+updated: 2017-05-09T09:56:11.231663964+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: 323a1c4214101331a4b71922c23d19b7409ac71f
+  version: 83814a76cc77279d5d979780e82f4464b33677c3
   subpackages:
   - config
   - context
@@ -14,16 +14,16 @@ imports:
   - utils
   - validation
 - name: github.com/dgrijalva/jwt-go
-  version: 2268707a8f0843315e2004ee4f1d021dc08baedf
+  version: 6c8dedd55f8a2e41f605de6d5d66e51ed1f299fc
 - name: github.com/garyburd/redigo
-  version: 0d253a66e6e1349f4581d6d2b300ee434ee2da9f
+  version: ac91d6ff49bd0d278a90201de77a4f8ad9628e25
   subpackages:
   - internal
   - redis
 - name: github.com/go-sql-driver/mysql
-  version: 2e00b5cd70399450106cec6431c2e2ce3cae5034
+  version: ae5a66df4d33ba404d639bd0fc9189cd5ee79bcf
 - name: golang.org/x/crypto
-  version: 728b753d0135da6801d45a38e6f43ff55779c5c2
+  version: 122d919ec1efcfb58483215da23f815853e24b81
   subpackages:
   - pbkdf2
   - scrypt
@@ -36,18 +36,18 @@ imports:
   - internal/scram
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: 7d94d732be268c4904141f8b8604eb2d6d6544a1
+  version: 9659c814f1d54d63f9c623449a7111d3864c1361
   subpackages:
   - js
 - name: github.com/jtolds/gls
-  version: bb0351aa7eb6f322f32667d51375f26a2bca6628
+  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
 - name: github.com/smartystreets/assertions
-  version: c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558
+  version: 6165f082cc33bb8c48bcfcc159170daf07e65bb8
   subpackages:
   - internal/go-render/render
   - internal/oglematchers
 - name: github.com/smartystreets/goconvey
-  version: 3bd662eac601ad6436e64776af2e112069eb2edc
+  version: af8e7d560364b90f732a1d119d17b5506e50447d
   subpackages:
   - convey
   - convey/gotest
