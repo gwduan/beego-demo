@@ -1,8 +1,8 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2017-10-09T10:18:49.70047827+08:00
+updated: 2017-12-07T14:35:29.030578667+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: 3162da131da68f38e85765781c9d1cc419963e67
+  version: bf5c5626ab429e66d88602e1ab1ab5fbf4629a01
   subpackages:
   - config
   - context
@@ -15,19 +15,23 @@ imports:
   - utils
   - validation
 - name: github.com/dgrijalva/jwt-go
-  version: a539ee1a749a2b895533f979515ac7e6e0f5b650
+  version: dbeaa9332f19a944acb5736b4456cfcc02140e29
 - name: github.com/garyburd/redigo
-  version: 34a326de1fea52965fa5ad664d3fc7163dd4b0a1
+  version: b389d5392e340092642eec4e36754e0280ad1f8e
   subpackages:
   - internal
   - redis
 - name: github.com/go-sql-driver/mysql
-  version: ee359f95877bdef36cbb602711e49b6f0becfca9
+  version: 9181e3a86a19bacd63e68d43ae8b7b36320d8092
 - name: golang.org/x/crypto
-  version: 9419663f5a44be8b34ca85f08abc5fe1be11f8a3
+  version: 94eea52f7b742c7cbe0b03b22f0c4c8631ece122
   subpackages:
   - pbkdf2
   - scrypt
+- name: google.golang.org/appengine
+  version: 9d8544a6b2c7df9cff240fcf92d7b2f59bc13416
+  subpackages:
+  - cloudsql
 - name: gopkg.in/mgo.v2
   version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
   subpackages:
@@ -37,7 +41,7 @@ imports:
   - internal/scram
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: 415225646bb92c4449bb484646f2c95a98402f6f
+  version: 444abdf920945de5d4a977b572bcc6c674d1e4eb
   subpackages:
   - js
 - name: github.com/jtolds/gls
