@@ -1,8 +1,8 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2017-12-07T14:35:29.030578667+08:00
+updated: 2018-03-11T06:42:59.490128+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: bf5c5626ab429e66d88602e1ab1ab5fbf4629a01
+  version: f16688817aa428d10361394015b40d096b680542
   subpackages:
   - config
   - context
@@ -15,21 +15,21 @@ imports:
   - utils
   - validation
 - name: github.com/dgrijalva/jwt-go
-  version: dbeaa9332f19a944acb5736b4456cfcc02140e29
+  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: github.com/garyburd/redigo
-  version: b389d5392e340092642eec4e36754e0280ad1f8e
+  version: a7327d8ced8067e916e7e35490522fd0182fa839
   subpackages:
   - internal
   - redis
 - name: github.com/go-sql-driver/mysql
-  version: 9181e3a86a19bacd63e68d43ae8b7b36320d8092
+  version: 1a676ac6e4dce68e9303a1800773861350374a9e
 - name: golang.org/x/crypto
-  version: 94eea52f7b742c7cbe0b03b22f0c4c8631ece122
+  version: c7dcf104e3a7a1417abc0230cb0d5240d764159d
   subpackages:
   - pbkdf2
   - scrypt
 - name: google.golang.org/appengine
-  version: 9d8544a6b2c7df9cff240fcf92d7b2f59bc13416
+  version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
   subpackages:
   - cloudsql
 - name: gopkg.in/mgo.v2
@@ -41,18 +41,18 @@ imports:
   - internal/scram
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: 444abdf920945de5d4a977b572bcc6c674d1e4eb
+  version: df18d38287ab2ed3138d564e7c8cbe4d5a249d87
   subpackages:
   - js
 - name: github.com/jtolds/gls
   version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
 - name: github.com/smartystreets/assertions
-  version: 0b37b35ec7434b77e77a4bb29b79677cced992ea
+  version: 7678a5452ebea5b7090a6b163f844c133f523da2
   subpackages:
   - internal/go-render/render
   - internal/oglematchers
 - name: github.com/smartystreets/goconvey
-  version: e5b2b7c9111590d019a696c7800593f666e1a7f4
+  version: ef6db91d284a0e7badaa1f0c404c30aa7dee3aed
   subpackages:
   - convey
   - convey/gotest
