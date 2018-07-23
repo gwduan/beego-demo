@@ -1,8 +1,8 @@
 hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2018-03-11T06:42:59.490128+08:00
+updated: 2018-07-23T07:33:42.638258+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: f16688817aa428d10361394015b40d096b680542
+  version: a09bafbf2ab483742b17bb352f95dbc0a597e720
   subpackages:
   - config
   - context
@@ -15,39 +15,48 @@ imports:
   - utils
   - validation
 - name: github.com/dgrijalva/jwt-go
-  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
+  version: 0b96aaa707760d6ab28d9b9d1913ff5993328bae
 - name: github.com/garyburd/redigo
-  version: a7327d8ced8067e916e7e35490522fd0182fa839
+  version: 569eae59ada904ea8db7a225c2b47165af08735a
   subpackages:
   - internal
   - redis
 - name: github.com/go-sql-driver/mysql
-  version: 1a676ac6e4dce68e9303a1800773861350374a9e
-- name: golang.org/x/crypto
-  version: c7dcf104e3a7a1417abc0230cb0d5240d764159d
+  version: 99ff426eb706cffe92ff3d058e168b278cabf7c7
+- name: github.com/gomodule/redigo
+  version: 2cd21d9966bf7ff9ae091419744f0b3fb0fecace
   subpackages:
+  - internal
+  - redis
+- name: golang.org/x/crypto
+  version: a2144134853fc9a27a7b1e3eb4f19f1a76df13c9
+  subpackages:
+  - acme
+  - acme/autocert
   - pbkdf2
   - scrypt
 - name: google.golang.org/appengine
-  version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
+  version: b1f26356af11148e710935ed1ac8a7f5702c7612
   subpackages:
   - cloudsql
 - name: gopkg.in/mgo.v2
-  version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
+  version: 9856a29383ce1c59f308dd1cf0363a79b5bef6b5
   subpackages:
   - bson
   - internal/json
   - internal/sasl
   - internal/scram
+- name: gopkg.in/yaml.v2
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: df18d38287ab2ed3138d564e7c8cbe4d5a249d87
+  version: 0892b62f0d9fb5857760c3cfca837207185117ee
   subpackages:
   - js
 - name: github.com/jtolds/gls
   version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
 - name: github.com/smartystreets/assertions
-  version: 7678a5452ebea5b7090a6b163f844c133f523da2
+  version: eb5b59917fa21f01252cee37e84631c7fb502d82
   subpackages:
   - internal/go-render/render
   - internal/oglematchers
