@@ -1,5 +1,5 @@
-hash: 8eb7b12aa801d248714a6d5731bc1c23f2a0b7b6d4f153f3b422a753336bac4a
-updated: 2018-07-23T07:33:42.638258+08:00
+hash: d64840d7b592dc3328a241ca99c94849a2166a81a31c4e32ca2602def9263f27
+updated: 2018-07-24T10:36:41.252453+08:00
 imports:
 - name: github.com/astaxie/beego
   version: a09bafbf2ab483742b17bb352f95dbc0a597e720
@@ -19,7 +19,6 @@ imports:
 - name: github.com/garyburd/redigo
   version: 569eae59ada904ea8db7a225c2b47165af08735a
   subpackages:
-  - internal
   - redis
 - name: github.com/go-sql-driver/mysql
   version: 99ff426eb706cffe92ff3d058e168b278cabf7c7
@@ -29,7 +28,7 @@ imports:
   - internal
   - redis
 - name: golang.org/x/crypto
-  version: a2144134853fc9a27a7b1e3eb4f19f1a76df13c9
+  version: c126467f60eb25f8f27e5a981f32a87e3965053f
   subpackages:
   - acme
   - acme/autocert

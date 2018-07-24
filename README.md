@@ -155,7 +155,7 @@ $ glide install
 $ go get -u github.com/astaxie/beego
 $ go get -u github.com/astaxie/beego/session/redis
 $ go get -u gopkg.in/mgo.v2
-$ go get -u github.com/garyburd/redigo/redis
+$ go get -u github.com/gomodule/redigo/redis
 $ go get -u github.com/go-sql-driver/mysql
 $ go get -u golang.org/x/crypto/scrypt
 $ go get -u github.com/dgrijalva/jwt-go

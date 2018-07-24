@@ -15,6 +15,7 @@ import:
 - package: gopkg.in/mgo.v2
   subpackages:
   - bson
+- package: github.com/gomodule/redigo
 testImport:
 - package: github.com/smartystreets/goconvey
   subpackages:
