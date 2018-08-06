@@ -1,8 +1,8 @@
 hash: d64840d7b592dc3328a241ca99c94849a2166a81a31c4e32ca2602def9263f27
-updated: 2018-07-24T10:36:41.252453+08:00
+updated: 2018-08-06T08:45:54.648772+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: a09bafbf2ab483742b17bb352f95dbc0a597e720
+  version: 053a075344c118a5cc41981b29ef612bb53d20ca
   subpackages:
   - config
   - context
@@ -28,14 +28,14 @@ imports:
   - internal
   - redis
 - name: golang.org/x/crypto
-  version: c126467f60eb25f8f27e5a981f32a87e3965053f
+  version: 56440b844dfe139a8ac053f4ecac0b20b79058f4
   subpackages:
   - acme
   - acme/autocert
   - pbkdf2
   - scrypt
 - name: google.golang.org/appengine
-  version: b1f26356af11148e710935ed1ac8a7f5702c7612
+  version: 4216e58b9158e5f1c906f1aca75162a46a2ec88a
   subpackages:
   - cloudsql
 - name: gopkg.in/mgo.v2
@@ -55,7 +55,7 @@ testImports:
 - name: github.com/jtolds/gls
   version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
 - name: github.com/smartystreets/assertions
-  version: eb5b59917fa21f01252cee37e84631c7fb502d82
+  version: 886ec427f6b97ea7c207ab54f4045050647c2820
   subpackages:
   - internal/go-render/render
   - internal/oglematchers
