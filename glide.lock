@@ -1,8 +1,8 @@
 hash: d64840d7b592dc3328a241ca99c94849a2166a81a31c4e32ca2602def9263f27
-updated: 2018-08-06T08:45:54.648772+08:00
+updated: 2018-11-26T09:10:00.924469+08:00
 imports:
 - name: github.com/astaxie/beego
-  version: 053a075344c118a5cc41981b29ef612bb53d20ca
+  version: b0e2bbce2a45fcfda684b47968387fa0866ada06
   subpackages:
   - config
   - context
@@ -15,27 +15,26 @@ imports:
   - utils
   - validation
 - name: github.com/dgrijalva/jwt-go
-  version: 0b96aaa707760d6ab28d9b9d1913ff5993328bae
+  version: 3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8
 - name: github.com/garyburd/redigo
   version: 569eae59ada904ea8db7a225c2b47165af08735a
   subpackages:
   - redis
 - name: github.com/go-sql-driver/mysql
-  version: 99ff426eb706cffe92ff3d058e168b278cabf7c7
+  version: 6be42e0ff99645d7d9626d779001a46e39c5f280
 - name: github.com/gomodule/redigo
-  version: 2cd21d9966bf7ff9ae091419744f0b3fb0fecace
+  version: e8fc0692a7e26a05b06517348ed466349062eb47
   subpackages:
-  - internal
   - redis
 - name: golang.org/x/crypto
-  version: 56440b844dfe139a8ac053f4ecac0b20b79058f4
+  version: 3d3f9f413869b949e48070b5bc593aa22cc2b8f2
   subpackages:
   - acme
   - acme/autocert
   - pbkdf2
   - scrypt
 - name: google.golang.org/appengine
-  version: 4216e58b9158e5f1c906f1aca75162a46a2ec88a
+  version: 4a4468ece617fc8205e99368fa2200e9d1fad421
   subpackages:
   - cloudsql
 - name: gopkg.in/mgo.v2
@@ -49,18 +48,18 @@ imports:
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports:
 - name: github.com/gopherjs/gopherjs
-  version: 0892b62f0d9fb5857760c3cfca837207185117ee
+  version: d547d1d9531ed93dbdebcbff7f83e7c876a1e0ee
   subpackages:
   - js
 - name: github.com/jtolds/gls
-  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
+  version: b4936e06046bbecbb94cae9c18127ebe510a2cb9
 - name: github.com/smartystreets/assertions
-  version: 886ec427f6b97ea7c207ab54f4045050647c2820
+  version: b2de0cb4f26d0705483a2f495d89896d0b808573
   subpackages:
   - internal/go-render/render
   - internal/oglematchers
 - name: github.com/smartystreets/goconvey
-  version: ef6db91d284a0e7badaa1f0c404c30aa7dee3aed
+  version: 044398e4856c3a83fb98f9de0a8ed1c6495e2843
   subpackages:
   - convey
   - convey/gotest
