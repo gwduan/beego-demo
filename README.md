@@ -133,44 +133,36 @@ password =
 
 ## 运行
 
-将代码放在 $GOPATH/src 目录下：
+克隆代码：
 
 ```
-$ cd $GOPATH/src/
 $ git clone https://github.com/gwduan/beego-demo.git
+$ cd beego-demo/
 ```
 
-从 go1.7 开始，使用 [glide](https://github.com/Masterminds/glide) 工具来管理依赖包，需要事先安装好 glide 。
+之前使用 [glide](https://github.com/Masterminds/glide) 工具来管理依赖包，从go1.13 开始，切换到Go Modules 。
 
-安装依赖包：
-
-```
-$ cd $GOPATH/src/beego-demo/
-$ glide install
-```
-
-如果不使用 glide ，也可手工安装依赖包，但可能会有包版本的兼容问题：
+编译：
 
 ```
-$ go get -u github.com/astaxie/beego
-$ go get -u github.com/astaxie/beego/session/redis
-$ go get -u gopkg.in/mgo.v2
-$ go get -u github.com/gomodule/redigo/redis
-$ go get -u github.com/go-sql-driver/mysql
-$ go get -u golang.org/x/crypto/scrypt
-$ go get -u github.com/dgrijalva/jwt-go
+$ go build
 ```
 
-安装 bee 工具，调试阶段很好用：
+运行：
+
+```
+$ ./beego-demo
+```
+
+也可安装 bee 工具，这在调试阶段很好用：
 
 ```
 $ go get -u github.com/beego/bee
 ```
 
-开始运行：
+通过bee运行：
 
 ```
-$ cd $GOPATH/src/beego-demo/
 $ bee run
 ```
 
@@ -185,11 +177,21 @@ ______
 | |_/ /|  __/|  __/
 \____/  \___| \___| v1.10.0
 
-├── Beego     : 1.11.0
-├── GoVersion : go1.11.2
-├── GOOS      : darwin
+├── Beego     : 1.12.0
+├── GoVersion : go1.13.1
+├── GOOS      : linux
 ├── GOARCH    : amd64
 ```
+
+依赖包列表：
+
+* github.com/astaxie/beego
+* github.com/astaxie/beego/session/redis
+* gopkg.in/mgo.v2
+* github.com/gomodule/redigo/redis
+* github.com/go-sql-driver/mysql
+* golang.org/x/crypto/scrypt
+* github.com/dgrijalva/jwt-go
 
 ## 部署
 
